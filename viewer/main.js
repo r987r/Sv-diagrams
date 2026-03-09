@@ -284,12 +284,19 @@ function routeConnection(ax, ay, az, bx, by, bz, obstacles) {
 /* ─── scene builder ──────────────────────────────────────────────────── */
 
 async function buildScene(designPath) {
-  // clear
-  while (scene.children.length > 0) {
-    const child = scene.children[0];
-    scene.remove(child);
+  // clear scene — dispose geometry/materials and remove CSS2D label DOM nodes
+  scene.traverse((child) => {
     if (child.geometry) child.geometry.dispose();
-  }
+    if (child.material) {
+      if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+      else child.material.dispose();
+    }
+    // CSS2DObject appends its element to the labelRenderer container
+    if (child.isCSS2DObject && child.element && child.element.parentNode) {
+      child.element.parentNode.removeChild(child.element);
+    }
+  });
+  while (scene.children.length > 0) scene.remove(scene.children[0]);
   clickableObjects.length = 0;
   objectMeta.clear();
   lodObjects.length = 0;
