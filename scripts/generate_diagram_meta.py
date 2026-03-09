@@ -37,6 +37,13 @@ BUS_COLOR = "#FFC107"
 SUB_COMPONENT_SPACING_X = 10  # X spacing between agent sub-components
 SUB_COMPONENT_SPACING_Z = 10  # Z spacing between agent sub-components
 
+# Grid column counts for layout configuration
+AGENT_SUB_GRID_COLS = 2        # 2×2 grid for agent sub-components (VIP)
+DMA_CORE_GRID_COLS = 2         # core infrastructure grid
+DMA_AXIM_GRID_COLS = 3         # AXI master sub-module grid
+DMA_CH_GRID_COLS = 3           # channel sub-module grid
+DMA_OTHER_GRID_COLS = 2        # remaining sub-module grid
+
 
 # ── helpers ───────────────────────────────────────────────────────────────
 
@@ -548,7 +555,7 @@ def _add_agent_instances(instances, agent_cls, side, protocol,
     n = len(active_roles)
     if n == 0:
         return
-    cols = min(2, n)
+    cols = min(AGENT_SUB_GRID_COLS, n)
     rows = math.ceil(n / cols)
     sx = SUB_COMPONENT_SPACING_X
     sz = SUB_COMPONENT_SPACING_Z
@@ -788,7 +795,7 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
 
     # Core modules at Y=8, spread in X and Z
     core_layout = _layout_grid(
-        core_modules, cols=2, spacing_x=18, spacing_z=14, y=8
+        core_modules, cols=DMA_CORE_GRID_COLS, spacing_x=18, spacing_z=14, y=8
     )
     for (cn, cm), x, y, z in core_layout:
         short = _shorten_dma_name(cn, data_width)
@@ -810,7 +817,7 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
 
     # AXI master cluster at Y=-4, Z < 0 (back of scene)
     axim_layout = _layout_grid(
-        axim_subs, cols=3, spacing_x=16, spacing_z=12, y=-4
+        axim_subs, cols=DMA_AXIM_GRID_COLS, spacing_x=16, spacing_z=12, y=-4
     )
     for (sn, sm), x, y, z in axim_layout:
         short = _shorten_dma_name(sn, data_width)
@@ -823,7 +830,7 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
 
     # Channel cluster at Y=-4, Z > 0 (front of scene)
     ch_layout = _layout_grid(
-        ch_subs, cols=3, spacing_x=16, spacing_z=12, y=-4
+        ch_subs, cols=DMA_CH_GRID_COLS, spacing_x=16, spacing_z=12, y=-4
     )
     for (sn, sm), x, y, z in ch_layout:
         short = _shorten_dma_name(sn, data_width)
@@ -836,7 +843,7 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
 
     # Other sub-modules at Y=-14 (below, centred)
     other_layout = _layout_grid(
-        other_subs, cols=2, spacing_x=16, spacing_z=12, y=-14
+        other_subs, cols=DMA_OTHER_GRID_COLS, spacing_x=16, spacing_z=12, y=-14
     )
     for (sn, sm), x, y, z in other_layout:
         short = _shorten_dma_name(sn, data_width)
