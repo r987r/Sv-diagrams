@@ -28,6 +28,8 @@ const K = {
   CAM_DIST: 1.6,           // camera distance multiplier
   HIT_RADIUS: 0.45,        // click hit-zone radius
   LOD_DIST: 120,            // label hide distance
+  COMP_OPACITY: 0.10,       // base opacity for composable blocks
+  COMP_EDGE_OPACITY: 0.45,  // wireframe edge opacity for composable blocks
 };
 
 /* ─── renderer setup ─────────────────────────────────────────────────── */
@@ -42,6 +44,7 @@ labelRenderer.setSize(window.innerWidth, window.innerHeight);
 labelRenderer.domElement.style.position = "fixed";
 labelRenderer.domElement.style.inset = "0";
 labelRenderer.domElement.style.pointerEvents = "none";
+labelRenderer.domElement.style.zIndex = "50";
 document.body.appendChild(labelRenderer.domElement);
 
 const scene = new THREE.Scene();
@@ -80,6 +83,7 @@ const clickableObjects = [];      // meshes for raycasting
 const objectMeta = new Map();     // mesh → { type, data }
 const lodObjects = [];            // { obj, maxDist }
 let currentHighlightObjs = [];    // currently highlighted objects
+const connCylinders = new Map();  // connKey → { cylinders[], originalColor, conn }
 
 /* ─── DOM refs ───────────────────────────────────────────────────────── */
 
@@ -124,6 +128,37 @@ function dashedBox(cx, cy, cz, w, h, d, color) {
   seg.computeLineDistances();
   seg.position.set(cx, cy, cz);
   return seg;
+}
+
+/**
+ * Create a composable (solid semi-transparent) container block for groups and testbench.
+ * These are the "box within box" hierarchy visuals.
+ */
+function composableBlock(cx, cy, cz, w, h, d, color, depth = 0) {
+  const group = new THREE.Group();
+
+  // Opacity decreases with nesting depth (outermost most transparent)
+  const opacity = K.COMP_OPACITY + depth * 0.03;
+
+  // Solid semi-transparent face
+  const faceGeo = new THREE.BoxGeometry(w, h, d);
+  const faceMat = new THREE.MeshLambertMaterial({
+    color, transparent: true, opacity,
+    side: THREE.DoubleSide, depthWrite: false,
+  });
+  const mesh = new THREE.Mesh(faceGeo, faceMat);
+  mesh.renderOrder = -10 + depth;  // outer first, inner later
+  group.add(mesh);
+
+  // Wireframe edges
+  const edgeGeo = new THREE.EdgesGeometry(faceGeo);
+  const edgeMat = new THREE.LineBasicMaterial({
+    color, transparent: true, opacity: K.COMP_EDGE_OPACITY,
+  });
+  group.add(new THREE.LineSegments(edgeGeo, edgeMat));
+
+  group.position.set(cx, cy, cz);
+  return { group, mesh };
 }
 
 /**
@@ -302,6 +337,7 @@ async function buildScene(designPath) {
   objectMeta.clear();
   lodObjects.length = 0;
   currentHighlightObjs.length = 0;
+  connCylinders.clear();
   $popup.classList.add("hidden");
 
   // re-add lights & grid
@@ -375,13 +411,14 @@ async function buildScene(designPath) {
     objectMeta.set(mesh, { type: "instance", data: { instance: inst, module: mod } });
   }
 
-  // ── create groups (nested dashed enclosures) ─────────────────────
-  // Sort by member count ascending so inner groups render first
+  // ── create groups (composable blocks – nested solid enclosures) ───
+  // Sort by member count descending so outer groups render first for proper depth
   const sortedGroups = [...groups].sort(
-    (a, b) => (a.instances?.length ?? 0) - (b.instances?.length ?? 0)
+    (a, b) => (b.instances?.length ?? 0) - (a.instances?.length ?? 0)
   );
 
-  for (const grp of sortedGroups) {
+  for (let gi = 0; gi < sortedGroups.length; gi++) {
+    const grp = sortedGroups[gi];
     const grpInstances = (grp.instances ?? [])
       .map(n => instMap[n])
       .filter(Boolean);
@@ -415,24 +452,22 @@ async function buildScene(designPath) {
     const h = Math.max(yMax - yMin, K.MIN_GROUP_H);
     const d = zMax - zMin;
 
+    // depth: outer groups (more members) get lower depth number
+    const depth = gi;
     const grpColor = parseInt((grp.color ?? "#546E7A").replace("#", ""), 16);
-    const box = dashedBox(cx, cy, cz, w, h, d, grpColor);
-    scene.add(box);
+    const { group: blockGroup, mesh: blockMesh } = composableBlock(cx, cy, cz, w, h, d, grpColor, depth);
+    scene.add(blockGroup);
 
-    // group label at top of the box
+    // group label at top of the box – LOD scales with group size
+    const lodScale = grpInstances.length >= instances.length * 0.5 ? 2.0 : 1.2;
     const label = makeLabel(grp.name, "group-label");
     label.position.set(cx, yMax + 1.2, cz);
     scene.add(label);
-    lodObjects.push({ obj: label, maxDist: K.LOD_DIST * 1.5 });
+    lodObjects.push({ obj: label, maxDist: K.LOD_DIST * lodScale });
 
-    // register click target via invisible box
-    const boxGeo = new THREE.BoxGeometry(w, h, d);
-    const boxMat = new THREE.MeshBasicMaterial({ visible: false });
-    const boxMesh = new THREE.Mesh(boxGeo, boxMat);
-    boxMesh.position.set(cx, cy, cz);
-    scene.add(boxMesh);
-    clickableObjects.push(boxMesh);
-    objectMeta.set(boxMesh, { type: "group", data: grp });
+    // register click target on the composable block mesh
+    clickableObjects.push(blockMesh);
+    objectMeta.set(blockMesh, { type: "group", data: grp });
   }
 
   // ── create connections (bundled cylinders) ──────────────────────
@@ -475,11 +510,14 @@ async function buildScene(designPath) {
 
     const signals = conn.signals ?? [];
     const numSigs = signals.length;
+    const connKey = conn.id ?? `${conn.from?.instance}_to_${conn.to?.instance}`;
+    const cyls = [];
 
     // Draw bundled cylinder for each segment
     for (let i = 0; i < waypoints.length - 1; i++) {
       const cyl = bundleCylinder(waypoints[i], waypoints[i + 1], color, numSigs);
       scene.add(cyl);
+      cyls.push(cyl);
 
       // hit zone for clicking
       const hz = hitZone(waypoints[i], waypoints[i + 1]);
@@ -487,6 +525,9 @@ async function buildScene(designPath) {
       clickableObjects.push(hz);
       objectMeta.set(hz, { type: "connection", data: conn });
     }
+
+    // Track cylinders for highlight
+    connCylinders.set(connKey, { cylinders: cyls, originalColor: color, conn });
 
     // signal count label at midpoint
     if (numSigs > 1) {
@@ -499,7 +540,7 @@ async function buildScene(designPath) {
     }
   }
 
-  // ── testbench enclosure ─────────────────────────────────────────
+  // ── testbench enclosure (composable block – outermost container) ─
   if (instances.length > 0) {
     const allBounds = computeBounds(instances, 8);
     const cx = (allBounds.xMin + allBounds.xMax) / 2;
@@ -509,13 +550,14 @@ async function buildScene(designPath) {
     const h = Math.max(allBounds.yMax - allBounds.yMin, 6);
     const d = allBounds.zMax - allBounds.zMin;
 
-    const tbBox = dashedBox(cx, cy, cz, w, h, d, K.TB_COL);
-    scene.add(tbBox);
+    const { group: tbGroup } = composableBlock(cx, cy, cz, w, h, d, K.TB_COL, 0);
+    scene.add(tbGroup);
 
     const tbName = tb.module_name ?? data.design_name ?? "Testbench";
     const tbLabel = makeLabel(tbName, "group-label");
     tbLabel.position.set(cx, cy + h / 2 + 1.5, cz);
     scene.add(tbLabel);
+    lodObjects.push({ obj: tbLabel, maxDist: K.LOD_DIST * 2.5 });
   }
 
   // ── global signals (clock/reset rails) ──────────────────────────
@@ -592,9 +634,21 @@ function onCanvasClick(event) {
     return;
   }
 
-  const hit = hits[0].object;
-  const meta = objectMeta.get(hit);
-  if (!meta) return;
+  // Prioritise: instance > connection > group (prefer precise targets)
+  let chosen = null;
+  for (const h of hits) {
+    const m = objectMeta.get(h.object);
+    if (!m) continue;
+    if (m.type === "instance") { chosen = { hit: h, meta: m }; break; }
+    if (m.type === "connection" && (!chosen || chosen.meta.type === "group")) {
+      chosen = { hit: h, meta: m };
+    }
+    if (m.type === "group" && !chosen) {
+      chosen = { hit: h, meta: m };
+    }
+  }
+  if (!chosen) return;
+  const meta = chosen.meta;
 
   if (meta.type === "instance") {
     showInstanceInfo(meta.data.instance, meta.data.module);
@@ -617,6 +671,15 @@ function clearHighlight() {
     if (obj.material) obj.material.dispose();
   }
   currentHighlightObjs = [];
+
+  // Restore connection cylinder original appearance
+  for (const [, entry] of connCylinders) {
+    for (const cyl of entry.cylinders) {
+      cyl.material.opacity = 0.45;
+      cyl.material.emissive?.setHex(0x000000);
+      cyl.material.emissiveIntensity = 0;
+    }
+  }
 }
 
 function highlightInstance(instName) {
@@ -652,6 +715,17 @@ function addConnectionHighlights(instName) {
   if (!designData) return;
   for (const conn of (designData.connections ?? [])) {
     if (conn.from?.instance === instName || conn.to?.instance === instName) {
+      // Brighten connection cylinders
+      const connKey = conn.id ?? `${conn.from?.instance}_to_${conn.to?.instance}`;
+      const entry = connCylinders.get(connKey);
+      if (entry) {
+        for (const cyl of entry.cylinders) {
+          cyl.material.opacity = 0.9;
+          cyl.material.emissive = new THREE.Color(0xffffff);
+          cyl.material.emissiveIntensity = 0.3;
+        }
+      }
+
       // Find the connected instance and add a subtle glow
       const otherName = conn.from?.instance === instName
         ? conn.to?.instance : conn.from?.instance;
@@ -674,6 +748,17 @@ function addConnectionHighlights(instName) {
 }
 
 function highlightConnection(conn) {
+  // Brighten connection cylinders for this connection
+  const connKey = conn.id ?? `${conn.from?.instance}_to_${conn.to?.instance}`;
+  const entry = connCylinders.get(connKey);
+  if (entry) {
+    for (const cyl of entry.cylinders) {
+      cyl.material.opacity = 0.95;
+      cyl.material.emissive = new THREE.Color(0xffffff);
+      cyl.material.emissiveIntensity = 0.4;
+    }
+  }
+
   // Highlight both endpoints
   if (conn.from?.instance) highlightInstance(conn.from.instance);
   if (conn.to?.instance) {
@@ -803,21 +888,27 @@ function showConnectionInfo(conn) {
   let html = "";
 
   html += `<p class="section-title">Route</p>`;
-  html += `<p>${conn.from?.instance ?? "?"}.${conn.from?.port ?? ""} → ${conn.to?.instance ?? "?"}.${conn.to?.port ?? ""}</p>`;
-  html += `<p>Type: ${conn.type ?? "signal"}</p>`;
+  html += `<p><span class="highlight-tag" style="background:rgba(144,202,249,.15)">${conn.from?.instance ?? "?"}</span>`;
+  html += `.${conn.from?.port ?? ""} → `;
+  html += `<span class="highlight-tag" style="background:rgba(144,202,249,.15)">${conn.to?.instance ?? "?"}</span>`;
+  html += `.${conn.to?.port ?? ""}</p>`;
+  html += `<p>Type: <strong>${conn.type ?? "signal"}</strong></p>`;
 
   const signals = conn.signals ?? [];
   if (signals.length > 0) {
     html += `<p class="section-title">Bundled Signals (${signals.length})</p>`;
-    html += `<div class="signal-list">`;
-    for (const s of signals.slice(0, 30)) {
+    html += `<table><tr><th>Signal</th><th>Width</th><th>Mapping</th></tr>`;
+    for (const s of signals.slice(0, 40)) {
       const w = s.width ?? 1;
-      html += `<div>${s.name}${w > 1 ? ` [${w - 1}:0]` : ""}</div>`;
+      const range = w > 1 ? `[${w - 1}:0]` : "[0]";
+      html += `<tr><td style="font-family:monospace;font-size:11px">${s.name}</td>`;
+      html += `<td>${w}</td>`;
+      html += `<td style="font-size:11px;color:#78909C">${conn.from?.instance}.${s.name} → ${conn.to?.instance}.${s.name}</td></tr>`;
     }
-    if (signals.length > 30) {
-      html += `<div style="color:#78909C">… ${signals.length - 30} more</div>`;
+    if (signals.length > 40) {
+      html += `<tr><td colspan="3" style="color:#78909C">… ${signals.length - 40} more</td></tr>`;
     }
-    html += `</div>`;
+    html += `</table>`;
   }
 
   $popBody.innerHTML = html;
