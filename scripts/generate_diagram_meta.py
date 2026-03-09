@@ -34,7 +34,15 @@ RST_COLOR = "#FF5252"
 SIGNAL_COLOR = "#FFC107"
 TLM_COLOR = "#29B6F6"
 BUS_COLOR = "#FFC107"
-SUB_COMPONENT_SPACING = 8  # horizontal spacing between agent sub-components
+SUB_COMPONENT_SPACING_X = 10  # X spacing between agent sub-components
+SUB_COMPONENT_SPACING_Z = 10  # Z spacing between agent sub-components
+
+# Grid column counts for layout configuration
+AGENT_SUB_GRID_COLS = 2        # 2×2 grid for agent sub-components (VIP)
+DMA_CORE_GRID_COLS = 2         # core infrastructure grid
+DMA_AXIM_GRID_COLS = 3         # AXI master sub-module grid
+DMA_CH_GRID_COLS = 3           # channel sub-module grid
+DMA_OTHER_GRID_COLS = 2        # remaining sub-module grid
 
 
 # ── helpers ───────────────────────────────────────────────────────────────
@@ -217,67 +225,71 @@ def build_vip_diagram(meta, design_name, description):
             "total_classes": len(test_classes),
         }
 
-    # ── Hierarchical Y-axis layout ────────────────────────────────────
-    # Y=20  Tests (top-level stimulus)
-    # Y=14  Sequences (virtual sequences)
-    # Y=8   Scoreboard / Env config (environment level)
-    # Y=0   Master/Slave agents (agent containers)
-    # Y=-6  Sequencer, Driver, Monitor, Coverage (agent internals)
-    # Y=-14 Interfaces / BFMs (HDL layer)
+    # ── 3D hierarchical layout ────────────────────────────────────────
+    # Utilises all three axes for a true 3D arrangement:
+    #   Y  – hierarchy level  (higher = closer to testbench top)
+    #   X  – master vs slave  (left / right separation)
+    #   Z  – depth within a level (front / back distribution)
+    #
+    # Y=24  Tests (top-level stimulus, outside environment)
+    # Y=12  Sequences + Env component (environment level, Z-separated)
+    # Y=2   Master / Slave agent containers
+    # Y=-8  Agent internals in 2×2 X-Z grids (sequencer, driver, monitor, coverage)
+    # Y=-20 Interfaces / BFMs (HDL layer, centred)
 
-    # Tests
+    # Tests – outside the environment box, at the top of the testbench
     if test_classes:
         instances.append({
             "name": "tests", "module": "tests",
-            "position": {"x": 0, "y": 20, "z": 0},
+            "position": {"x": 0, "y": 24, "z": 0},
             "info": {"class_count": len(test_classes),
                      "classes": [c["name"] for c in test_classes[:15]]},
         })
 
-    # Sequences
+    # Sequences – inside the environment, offset in Z for depth
     if seq_classes:
         instances.append({
             "name": "sequences", "module": "sequences",
-            "position": {"x": -24, "y": 14, "z": 0},
+            "position": {"x": 0, "y": 12, "z": -10},
             "info": {"class_count": len(seq_classes),
                      "classes": [c["name"] for c in seq_classes[:15]]},
         })
 
-    # Environment
+    # Environment component – inside the environment, offset in Z opposite sequences
     instances.append({
         "name": "env", "module": "env",
-        "position": {"x": 0, "y": 8, "z": 0},
+        "position": {"x": 0, "y": 12, "z": 10},
         "info": {"class_count": len(env_classes),
                  "classes": [c["name"] for c in env_classes],
                  "description": f"{protocol} UVM Environment"},
     })
 
-    # Master agent (container) and its sub-components
+    # Master agent (container) and its 2×2 sub-component grid
     master_x = -14
     _add_agent_instances(instances, master_classes, "master", protocol,
-                         x_center=master_x, y_agent=0, y_sub=-6)
+                         x_center=master_x, y_agent=2, y_sub=-8)
 
-    # Slave agent (container) and its sub-components
+    # Slave agent (container) and its 2×2 sub-component grid
     slave_x = 14
     _add_agent_instances(instances, slave_classes, "slave", protocol,
-                         x_center=slave_x, y_agent=0, y_sub=-6)
+                         x_center=slave_x, y_agent=2, y_sub=-8)
 
-    # Interfaces (HDL layer – bottom)
-    iface_x = -16
-    for iface in ifaces:
+    # Interfaces (HDL layer – bottom, centred under the hierarchy)
+    active_ifaces = [i for i in ifaces if i.get("signals")]
+    n_iface = len(active_ifaces)
+    iface_spacing_x = 14
+    for idx, iface in enumerate(active_ifaces):
         iface_name = iface.get("name", "")
         signals = iface.get("signals", [])
-        if not signals:
-            continue
+        iface_x = (idx - (n_iface - 1) / 2) * iface_spacing_x
         instances.append({
             "name": iface_name, "module": f"iface_{iface_name}",
-            "position": {"x": iface_x, "y": -14, "z": 0},
+            "position": {"x": iface_x, "y": -20, "z": 0},
             "info": {"signal_count": len(signals),
                      "signals": [{"name": s.get("name", ""), "type": s.get("type", "")}
                                  for s in signals],
                      "description": f"Interface: {iface_name}"},
         })
-        iface_x += 12
 
     # ── Connections ───────────────────────────────────────────────────
     # Tests → Environment
@@ -523,7 +535,11 @@ def _add_agent_modules(modules, agent_cls, side, protocol, base_color):
 
 def _add_agent_instances(instances, agent_cls, side, protocol,
                          x_center, y_agent, y_sub):
-    """Add positioned instances for an agent and its sub-components."""
+    """Add positioned instances for an agent and its sub-components.
+    
+    Sub-components are placed in a 2D grid across X and Z axes to fully
+    utilise the 3D space and avoid overlap between master/slave sides.
+    """
     # Agent container
     instances.append({
         "name": f"{side}_agent", "module": f"{side}_agent",
@@ -533,19 +549,25 @@ def _add_agent_instances(instances, agent_cls, side, protocol,
                  "classes": [c["name"] for c in agent_cls["agent"][:5]]},
     })
 
-    # Sub-components laid out horizontally under the agent
+    # Sub-components in a 2D X-Z grid below the agent container
     sub_roles = ["sequencer", "driver", "monitor", "coverage"]
     active_roles = [r for r in sub_roles if agent_cls[r]]
     n = len(active_roles)
     if n == 0:
         return
-    spacing = SUB_COMPONENT_SPACING
-    start_x = x_center - (n - 1) * spacing / 2
+    cols = min(AGENT_SUB_GRID_COLS, n)
+    rows = math.ceil(n / cols)
+    sx = SUB_COMPONENT_SPACING_X
+    sz = SUB_COMPONENT_SPACING_Z
     for i, role in enumerate(active_roles):
+        col = i % cols
+        row = i // cols
+        x = x_center + (col - (cols - 1) / 2) * sx
+        z = (row - (rows - 1) / 2) * sz
         cls_list = agent_cls[role]
         instances.append({
             "name": f"{side}_{role}", "module": f"{side}_{role}",
-            "position": {"x": start_x + i * spacing, "y": y_sub, "z": 0},
+            "position": {"x": x, "y": y_sub, "z": z},
             "info": {"description": f"{protocol} {side.title()} {role.title()}",
                      "class_count": len(cls_list),
                      "classes": [c["name"] for c in cls_list[:5]]},
@@ -750,10 +772,15 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
         }
         colour_idx += 1
 
-    # ── Create instances with hierarchical positioning ────────────────
-    # Y=12  Top module (top-level container)
-    # Y=6   Core modules (dual_core, top, reg, apb_mux)
-    # Y=0   Sub-modules (axim_*, channels, ctrl, wdt)
+    # ── Create instances with hierarchical 3D positioning ────────────
+    # Utilises all three axes to place functional groups in distinct
+    # regions of 3D space, ensuring proper visual containment.
+    #
+    # Y=16  Top module
+    # Y=8   Core infrastructure (dual_core, top, reg, apb_mux)
+    # Y=-4  AXI master sub-modules (axim_*)  – Z < 0 zone
+    # Y=-4  Channel sub-modules (ch, channels, channels_mux) – Z > 0 zone
+    # Y=-14 Other sub-modules (core0, arbiter, ctrl, wdt)
 
     # Top module
     if top_module:
@@ -762,13 +789,13 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
         instances.append({
             "name": short,
             "module": short,
-            "position": {"x": 0, "y": 12, "z": 0},
+            "position": {"x": 0, "y": 16, "z": 0},
             "info": _module_info(tm),
         })
 
-    # Core modules at Y=6
+    # Core modules at Y=8, spread in X and Z
     core_layout = _layout_grid(
-        core_modules, cols=3, spacing_x=16, spacing_z=14, y=6
+        core_modules, cols=DMA_CORE_GRID_COLS, spacing_x=18, spacing_z=14, y=8
     )
     for (cn, cm), x, y, z in core_layout:
         short = _shorten_dma_name(cn, data_width)
@@ -779,11 +806,46 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
             "info": _module_info(cm),
         })
 
-    # Sub-modules at Y=0
-    sub_layout = _layout_grid(
-        sub_modules, cols=4, spacing_x=14, spacing_z=12, y=0
+    # ── Sub-modules: group by function for 3D clustering ──────────
+    axim_subs = [(n, m) for n, m in sub_modules
+                 if "axim" in _shorten_dma_name(n, data_width)]
+    ch_subs = [(n, m) for n, m in sub_modules
+               if any(k in _shorten_dma_name(n, data_width)
+                      for k in ("ch", "channel"))]
+    other_subs = [(n, m) for n, m in sub_modules
+                  if (n, m) not in axim_subs and (n, m) not in ch_subs]
+
+    # AXI master cluster at Y=-4, Z < 0 (back of scene)
+    axim_layout = _layout_grid(
+        axim_subs, cols=DMA_AXIM_GRID_COLS, spacing_x=16, spacing_z=12, y=-4
     )
-    for (sn, sm), x, y, z in sub_layout:
+    for (sn, sm), x, y, z in axim_layout:
+        short = _shorten_dma_name(sn, data_width)
+        instances.append({
+            "name": short,
+            "module": short,
+            "position": {"x": x, "y": y, "z": z - 18},
+            "info": _module_info(sm),
+        })
+
+    # Channel cluster at Y=-4, Z > 0 (front of scene)
+    ch_layout = _layout_grid(
+        ch_subs, cols=DMA_CH_GRID_COLS, spacing_x=16, spacing_z=12, y=-4
+    )
+    for (sn, sm), x, y, z in ch_layout:
+        short = _shorten_dma_name(sn, data_width)
+        instances.append({
+            "name": short,
+            "module": short,
+            "position": {"x": x, "y": y, "z": z + 20},
+            "info": _module_info(sm),
+        })
+
+    # Other sub-modules at Y=-14 (below, centred)
+    other_layout = _layout_grid(
+        other_subs, cols=DMA_OTHER_GRID_COLS, spacing_x=16, spacing_z=12, y=-14
+    )
+    for (sn, sm), x, y, z in other_layout:
         short = _shorten_dma_name(sn, data_width)
         instances.append({
             "name": short,
