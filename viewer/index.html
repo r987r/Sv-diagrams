@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SV Diagrams – 3D Hardware Visualization</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <!-- Top bar -->
+  <div id="topbar">
+    <span id="design-title">SV Diagrams</span>
+    <select id="design-select" aria-label="Select design">
+      <option value="">— Select Design —</option>
+    </select>
+    <button id="btn-overview" title="Design overview">ℹ</button>
+    <span class="hint">Orbit: drag · Zoom: scroll · Click: inspect</span>
+  </div>
+
+  <!-- Overview overlay -->
+  <div id="overview" class="overlay hidden">
+    <div class="overlay-content">
+      <button class="close-btn" id="close-overview">✕</button>
+      <h2 id="overview-title">Design Overview</h2>
+      <div id="overview-body"></div>
+    </div>
+  </div>
+
+  <!-- Info popup -->
+  <div id="popup" class="popup hidden">
+    <div id="popup-handle" class="popup-handle">
+      <span id="popup-title">Info</span>
+      <button class="close-btn" id="close-popup">✕</button>
+    </div>
+    <div id="popup-body"></div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+    <div id="loading-text">Loading design…</div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

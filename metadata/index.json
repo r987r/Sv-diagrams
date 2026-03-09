@@ -1,0 +1,40 @@
+{
+  "designs": [
+    {
+      "name": "uvc_axi4",
+      "file": "uvc_axi4.json",
+      "description": "AXI4 UVC \u2013 326 classes, 42 bus signals, full master/slave verification",
+      "type": "vip"
+    },
+    {
+      "name": "uvc_ahb",
+      "file": "uvc_ahb.json",
+      "description": "AHB UVC \u2013 50 classes, 18 bus signals, master/slave verification",
+      "type": "vip"
+    },
+    {
+      "name": "uvc_apb",
+      "file": "uvc_apb.json",
+      "description": "APB UVC \u2013 57 classes, 4 bus signals, register-level verification",
+      "type": "vip"
+    },
+    {
+      "name": "uvc_uart",
+      "file": "uvc_uart.json",
+      "description": "UART UVC \u2013 45 classes, serial Tx/Rx verification",
+      "type": "vip"
+    },
+    {
+      "name": "dma_axi32",
+      "file": "dma_axi32.json",
+      "description": "DMA AXI 32-bit \u2013 multi-channel DMA controller with AXI master & APB slave",
+      "type": "dma"
+    },
+    {
+      "name": "dma_axi64",
+      "file": "dma_axi64.json",
+      "description": "DMA AXI 64-bit \u2013 multi-channel DMA controller with 64-bit data path",
+      "type": "dma"
+    }
+  ]
+}

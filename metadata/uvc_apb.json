@@ -1,0 +1,1026 @@
+{
+  "design_name": "uvc_apb",
+  "version": "1.0",
+  "description": "APB UVC \u2013 57 classes, 4 bus signals, register-level verification",
+  "source_repo": "https://github.com/r987r/blockify",
+  "metadata_type": "vip",
+  "protocol": "apb",
+  "summary": {
+    "total_packages": 8,
+    "total_classes": 57,
+    "total_interfaces": 7,
+    "total_signals": 4
+  },
+  "testbench": {
+    "module_name": "tb_top",
+    "global_signals": [
+      {
+        "name": "clk",
+        "face": "bottom",
+        "color": "#00E676"
+      },
+      {
+        "name": "rst_n",
+        "face": "top",
+        "color": "#FF5252"
+      }
+    ]
+  },
+  "modules": {
+    "testbench": {
+      "description": "APB UVC Testbench",
+      "color": "#37474F",
+      "ports": []
+    },
+    "env": {
+      "description": "apb Environment",
+      "color": "#1B5E20",
+      "ports": [
+        {
+          "name": "has_scoreboard",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "has_virtual_seqr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "no_of_slaves",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "apb_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_agent_config"
+        },
+        {
+          "name": "apb_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_agent_config$[]"
+        },
+        {
+          "name": "apb_master_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_sequencer"
+        },
+        {
+          "name": "apb_slave_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_sequencer$[]"
+        },
+        {
+          "name": "apb_master_tx_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_tx"
+        },
+        {
+          "name": "apb_slave_tx_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_tx"
+        },
+        {
+          "name": "apb_master_analysis_fifo",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "apb_slave_analysis_fifo",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo$[]"
+        },
+        {
+          "name": "apb_master_tx_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "apb_slave_tx_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_verified_master_pwdata_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_failed_master_pwdata_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_verified_master_paddr_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_failed_master_paddr_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_verified_master_pwrite_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_failed_master_pwrite_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_verified_slave_prdata_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_failed_slave_prdata_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_verified_master_pprot_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "byte_data_cmp_failed_master_pprot_count",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "index",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "apb_master_analysis_fifo",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "apb_slave_analysis_fifo",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo$[]"
+        },
+        {
+          "name": "apb_master_agent_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_agent"
+        },
+        {
+          "name": "apb_slave_agent_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_agent$[]"
+        },
+        {
+          "name": "apb_scoreboard_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_scoreboard"
+        },
+        {
+          "name": "apb_virtual_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_virtual_sequencer"
+        }
+      ],
+      "classes": [
+        "apb_env_config",
+        "apb_virtual_sequencer",
+        "apb_scoreboard",
+        "apb_env"
+      ],
+      "class_count": 4
+    },
+    "master_agent": {
+      "description": "apb Master Agent",
+      "color": "#1565C0",
+      "ports": [
+        {
+          "name": "is_active",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_active_passive_enum"
+        },
+        {
+          "name": "no_of_slaves",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "has_coverage",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "paddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "master_memory",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[17:0]"
+        },
+        {
+          "name": "master_min_addr_range_array",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[int]"
+        },
+        {
+          "name": "master_max_addr_range_array",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[int]"
+        },
+        {
+          "name": "paddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "pprot",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::protection_type_e"
+        },
+        {
+          "name": "pselx",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::slave_no_e"
+        },
+        {
+          "name": "pwrite",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::tx_type_e"
+        },
+        {
+          "name": "transfer_size",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::transfer_size_e"
+        },
+        {
+          "name": "pwdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "pstrb",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]"
+        },
+        {
+          "name": "prdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "pslverr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::slave_error_e"
+        },
+        {
+          "name": "apb_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_agent_config"
+        },
+        {
+          "name": "no_of_wait_states_detected",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "cont_write_read",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "address",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "apb_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_agent_config"
+        },
+        {
+          "name": "apb_master_tx_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_tx"
+        },
+        {
+          "name": "apb_master_drv_bfm_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_driver_bfm"
+        },
+        {
+          "name": "apb_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_agent_config"
+        },
+        {
+          "name": "apb_master_mon_bfm_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_monitor_bfm"
+        },
+        {
+          "name": "apb_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_agent_config"
+        },
+        {
+          "name": "apb_master_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "apb_master_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "apb_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_agent_config"
+        },
+        {
+          "name": "apb_master_covergroup",
+          "direction": "InOut",
+          "width": 1,
+          "type": "<unnamed covergroup>"
+        }
+      ],
+      "classes": [
+        "apb_master_agent_config",
+        "apb_master_tx",
+        "apb_master_seq_item_converter",
+        "apb_master_cfg_converter",
+        "apb_master_adapter",
+        "apb_master_sequencer",
+        "apb_master_driver_proxy",
+        "apb_master_monitor_proxy",
+        "apb_master_coverage",
+        "apb_master_agent"
+      ],
+      "class_count": 10
+    },
+    "slave_agent": {
+      "description": "apb Slave Agent",
+      "color": "#4A148C",
+      "ports": [
+        {
+          "name": "psel",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "paddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "pwrite",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::tx_type_e"
+        },
+        {
+          "name": "pwdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "pslverr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::slave_error_e"
+        },
+        {
+          "name": "pready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "prdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "pprot",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::protection_type_e"
+        },
+        {
+          "name": "no_of_wait_states",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[2:0]"
+        },
+        {
+          "name": "choose_packet_data",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "transfer_size",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_global_pkg::transfer_size_e"
+        },
+        {
+          "name": "is_active",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_active_passive_enum"
+        },
+        {
+          "name": "slave_id",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "has_coverage",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "slave_selected",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "max_address",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "min_address",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "slave_memory",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[longint]"
+        },
+        {
+          "name": "paddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "apb_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_agent_config"
+        },
+        {
+          "name": "apb_slave_tx_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_tx"
+        },
+        {
+          "name": "apb_slave_drv_bfm_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_driver_bfm"
+        },
+        {
+          "name": "apb_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_agent_config"
+        },
+        {
+          "name": "apb_slave_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "apb_slave_mon_bfm_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_monitor_bfm"
+        },
+        {
+          "name": "apb_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_agent_config"
+        },
+        {
+          "name": "apb_slave_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "apb_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_agent_config"
+        },
+        {
+          "name": "apb_slave_covergroup",
+          "direction": "InOut",
+          "width": 1,
+          "type": "<unnamed covergroup>"
+        },
+        {
+          "name": "apb_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_slave_agent_config"
+        }
+      ],
+      "classes": [
+        "apb_slave_tx",
+        "apb_slave_agent_config",
+        "apb_slave_seq_item_converter",
+        "apb_slave_cfg_converter",
+        "apb_slave_sequencer",
+        "apb_slave_driver_proxy",
+        "apb_slave_monitor_proxy",
+        "apb_slave_coverage",
+        "apb_slave_agent"
+      ],
+      "class_count": 9
+    },
+    "iface_apb_if": {
+      "description": "Interface: apb_if",
+      "color": "#E65100",
+      "ports": [
+        {
+          "name": "penable",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "pwrite",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "pready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "pslverr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        }
+      ]
+    },
+    "sequences": {
+      "description": "apb Sequences (25 classes)",
+      "color": "#F57F17",
+      "ports": [],
+      "classes": [
+        "apb_master_base_seq",
+        "apb_master_vd_vws_seq",
+        "apb_master_8b_write_seq",
+        "apb_master_8b_write_read_seq",
+        "apb_master_16b_write_seq",
+        "apb_master_24b_write_seq",
+        "apb_master_32b_write_seq",
+        "apb_master_8b_read_seq",
+        "apb_slave_base_seq",
+        "apb_slave_16b_write_seq",
+        "apb_slave_24b_write_seq",
+        "apb_slave_32b_write_seq",
+        "apb_slave_8b_read_seq",
+        "apb_slave_8b_write_read_seq",
+        "apb_slave_8b_write_seq",
+        "apb_slave_vd_vws_seq",
+        "apb_virtual_base_seq",
+        "apb_virtual_vd_vws_seq",
+        "apb_virtual_8b_write_seq",
+        "apb_virtual_8b_write_read_seq"
+      ],
+      "total_classes": 25
+    },
+    "tests": {
+      "description": "apb Tests (9 classes)",
+      "color": "#880E4F",
+      "ports": [],
+      "classes": [
+        "apb_base_test",
+        "apb_vd_vws_test",
+        "apb_8b_write_test",
+        "apb_8b_write_read_test",
+        "apb_16b_write_test",
+        "apb_24b_write_test",
+        "apb_8b_read_test",
+        "apb_32b_write_test",
+        "apb_32b_write_multiple_slave_test"
+      ],
+      "total_classes": 9
+    }
+  },
+  "instances": [
+    {
+      "name": "tests",
+      "module": "tests",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -18
+      },
+      "info": {
+        "class_count": 9,
+        "classes": [
+          "apb_base_test",
+          "apb_vd_vws_test",
+          "apb_8b_write_test",
+          "apb_8b_write_read_test",
+          "apb_16b_write_test",
+          "apb_24b_write_test",
+          "apb_8b_read_test",
+          "apb_32b_write_test",
+          "apb_32b_write_multiple_slave_test"
+        ]
+      }
+    },
+    {
+      "name": "env",
+      "module": "env",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -8
+      },
+      "info": {
+        "class_count": 4,
+        "classes": [
+          "apb_env_config",
+          "apb_virtual_sequencer",
+          "apb_scoreboard",
+          "apb_env"
+        ],
+        "description": "apb UVM Environment"
+      }
+    },
+    {
+      "name": "sequences",
+      "module": "sequences",
+      "position": {
+        "x": -18,
+        "y": 0,
+        "z": 0
+      },
+      "info": {
+        "class_count": 25,
+        "classes": [
+          "apb_master_base_seq",
+          "apb_master_vd_vws_seq",
+          "apb_master_8b_write_seq",
+          "apb_master_8b_write_read_seq",
+          "apb_master_16b_write_seq",
+          "apb_master_24b_write_seq",
+          "apb_master_32b_write_seq",
+          "apb_master_8b_read_seq",
+          "apb_slave_base_seq",
+          "apb_slave_16b_write_seq",
+          "apb_slave_24b_write_seq",
+          "apb_slave_32b_write_seq",
+          "apb_slave_8b_read_seq",
+          "apb_slave_8b_write_read_seq",
+          "apb_slave_8b_write_seq"
+        ]
+      }
+    },
+    {
+      "name": "master_agent",
+      "module": "master_agent",
+      "position": {
+        "x": -8,
+        "y": 0,
+        "z": 2
+      },
+      "info": {
+        "class_count": 10,
+        "classes": [
+          "apb_master_agent_config",
+          "apb_master_tx",
+          "apb_master_seq_item_converter",
+          "apb_master_cfg_converter",
+          "apb_master_adapter",
+          "apb_master_sequencer",
+          "apb_master_driver_proxy",
+          "apb_master_monitor_proxy",
+          "apb_master_coverage",
+          "apb_master_agent"
+        ],
+        "description": "apb Master Agent"
+      }
+    },
+    {
+      "name": "slave_agent",
+      "module": "slave_agent",
+      "position": {
+        "x": 8,
+        "y": 0,
+        "z": 2
+      },
+      "info": {
+        "class_count": 9,
+        "classes": [
+          "apb_slave_tx",
+          "apb_slave_agent_config",
+          "apb_slave_seq_item_converter",
+          "apb_slave_cfg_converter",
+          "apb_slave_sequencer",
+          "apb_slave_driver_proxy",
+          "apb_slave_monitor_proxy",
+          "apb_slave_coverage",
+          "apb_slave_agent"
+        ],
+        "description": "apb Slave Agent"
+      }
+    },
+    {
+      "name": "apb_if",
+      "module": "iface_apb_if",
+      "position": {
+        "x": -10,
+        "y": 0,
+        "z": 14
+      },
+      "info": {
+        "signal_count": 4,
+        "signals": [
+          {
+            "name": "penable",
+            "type": "logic"
+          },
+          {
+            "name": "pwrite",
+            "type": "logic"
+          },
+          {
+            "name": "pready",
+            "type": "logic"
+          },
+          {
+            "name": "pslverr",
+            "type": "logic"
+          }
+        ],
+        "description": "Interface: apb_if"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "id": "test_to_env",
+      "type": "hierarchy",
+      "color": "#CE93D8",
+      "from": {
+        "instance": "tests",
+        "port": "env"
+      },
+      "to": {
+        "instance": "env",
+        "port": "create"
+      },
+      "signals": [
+        {
+          "name": "UVM hierarchy",
+          "width": 1
+        }
+      ],
+      "description": "Test creates and configures environment"
+    },
+    {
+      "id": "env_to_master",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "env",
+        "port": "master_agent"
+      },
+      "to": {
+        "instance": "master_agent",
+        "port": "parent"
+      },
+      "signals": [
+        {
+          "name": "agent_handle",
+          "width": 1
+        }
+      ],
+      "description": "Environment instantiates master agent"
+    },
+    {
+      "id": "env_to_slave",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "env",
+        "port": "slave_agent"
+      },
+      "to": {
+        "instance": "slave_agent",
+        "port": "parent"
+      },
+      "signals": [
+        {
+          "name": "agent_handle",
+          "width": 1
+        }
+      ],
+      "description": "Environment instantiates slave agent"
+    },
+    {
+      "id": "seq_to_master",
+      "type": "tlm",
+      "color": "#FFC107",
+      "from": {
+        "instance": "sequences",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "master_agent",
+        "port": "sequencer"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "Sequences drive transactions via sequencer"
+    },
+    {
+      "id": "master_to_apb_if",
+      "type": "signal",
+      "color": "#FFC107",
+      "from": {
+        "instance": "master_agent",
+        "port": "vif"
+      },
+      "to": {
+        "instance": "apb_if",
+        "port": "master_side"
+      },
+      "signals": [
+        {
+          "name": "penable",
+          "width": 1
+        },
+        {
+          "name": "pwrite",
+          "width": 1
+        },
+        {
+          "name": "pready",
+          "width": 1
+        },
+        {
+          "name": "pslverr",
+          "width": 1
+        }
+      ],
+      "description": "Master \u2194 apb_if (4 signals)"
+    },
+    {
+      "id": "apb_if_to_slave",
+      "type": "signal",
+      "color": "#FFC107",
+      "from": {
+        "instance": "apb_if",
+        "port": "slave_side"
+      },
+      "to": {
+        "instance": "slave_agent",
+        "port": "vif"
+      },
+      "signals": [
+        {
+          "name": "penable",
+          "width": 1
+        },
+        {
+          "name": "pwrite",
+          "width": 1
+        },
+        {
+          "name": "pready",
+          "width": 1
+        },
+        {
+          "name": "pslverr",
+          "width": 1
+        }
+      ],
+      "description": "apb_if \u2194 Slave (4 signals)"
+    }
+  ],
+  "groups": [
+    {
+      "name": "APB Testbench",
+      "instances": [
+        "tests",
+        "env",
+        "sequences",
+        "master_agent",
+        "slave_agent",
+        "apb_if"
+      ],
+      "color": "#37474F",
+      "description": "Top-level APB UVC testbench"
+    },
+    {
+      "name": "APB Environment",
+      "instances": [
+        "env",
+        "master_agent",
+        "slave_agent",
+        "sequences"
+      ],
+      "color": "#1B5E20",
+      "description": "APB UVM environment with agents"
+    }
+  ]
+}

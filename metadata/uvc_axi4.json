@@ -1,0 +1,1767 @@
+{
+  "design_name": "uvc_axi4",
+  "version": "1.0",
+  "description": "AXI4 UVC \u2013 326 classes, 42 bus signals, full master/slave verification",
+  "source_repo": "https://github.com/r987r/blockify",
+  "metadata_type": "vip",
+  "protocol": "axi4",
+  "summary": {
+    "total_packages": 8,
+    "total_classes": 326,
+    "total_interfaces": 7,
+    "total_signals": 44
+  },
+  "testbench": {
+    "module_name": "tb_top",
+    "global_signals": [
+      {
+        "name": "clk",
+        "face": "bottom",
+        "color": "#00E676"
+      },
+      {
+        "name": "rst_n",
+        "face": "top",
+        "color": "#FF5252"
+      }
+    ]
+  },
+  "modules": {
+    "testbench": {
+      "description": "AXI4 UVC Testbench",
+      "color": "#37474F",
+      "ports": []
+    },
+    "env": {
+      "description": "axi4 Environment",
+      "color": "#1B5E20",
+      "ports": [
+        {
+          "name": "has_scoreboard",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "has_virtual_seqr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "no_of_slaves",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "no_of_masters",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "axi4_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_agent_config$[]"
+        },
+        {
+          "name": "axi4_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_agent_config$[]"
+        },
+        {
+          "name": "write_read_mode_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::write_read_data_mode_e"
+        },
+        {
+          "name": "axi4_master_write_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_write_sequencer"
+        },
+        {
+          "name": "axi4_master_read_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_read_sequencer"
+        },
+        {
+          "name": "axi4_slave_write_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_write_sequencer"
+        },
+        {
+          "name": "axi4_slave_read_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_read_sequencer"
+        },
+        {
+          "name": "axi4_master_tx_h1",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx"
+        },
+        {
+          "name": "axi4_master_tx_h2",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx"
+        },
+        {
+          "name": "axi4_master_tx_h3",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx"
+        },
+        {
+          "name": "axi4_master_tx_h4",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx"
+        },
+        {
+          "name": "axi4_master_tx_h5",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx"
+        },
+        {
+          "name": "axi4_slave_tx_h1",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx"
+        },
+        {
+          "name": "axi4_slave_tx_h2",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx"
+        },
+        {
+          "name": "axi4_slave_tx_h3",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx"
+        },
+        {
+          "name": "axi4_slave_tx_h4",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx"
+        },
+        {
+          "name": "axi4_slave_tx_h5",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx"
+        },
+        {
+          "name": "count1",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "count2",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "count3",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "count4",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "masterArrayDataQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_env_pkg::axi4_scoreboard::DataTransaction$[longint][$]"
+        },
+        {
+          "name": "slaveArrayDataQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_env_pkg::axi4_scoreboard::DataTransaction$[longint][$]"
+        },
+        {
+          "name": "masterWriteAddressQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx$[int]"
+        },
+        {
+          "name": "slaveWriteAddressQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx$[int]"
+        },
+        {
+          "name": "masterReadAddressQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx$[int]"
+        }
+      ],
+      "classes": [
+        "axi4_env_config",
+        "axi4_virtual_sequencer",
+        "axi4_scoreboard",
+        "axi4_env"
+      ],
+      "class_count": 4
+    },
+    "master_agent": {
+      "description": "axi4 Master Agent",
+      "color": "#1565C0",
+      "ports": [
+        {
+          "name": "is_active",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_active_passive_enum"
+        },
+        {
+          "name": "has_coverage",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "master_memory",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[14:0]"
+        },
+        {
+          "name": "master_min_addr_range_array",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[int]"
+        },
+        {
+          "name": "master_max_addr_range_array",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[int]"
+        },
+        {
+          "name": "wait_count_write_address_channel",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "wait_count_write_data_channel",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "wait_count_read_address_channel",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "outstanding_write_tx",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "outstanding_read_tx",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "read_data_mode",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::read_data_type_mode_e"
+        },
+        {
+          "name": "qos_mode_type",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::qos_mode_e"
+        },
+        {
+          "name": "axi4_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_agent_config"
+        },
+        {
+          "name": "awid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awid_e"
+        },
+        {
+          "name": "awaddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "awlen",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]"
+        },
+        {
+          "name": "awsize",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awsize_e"
+        },
+        {
+          "name": "awburst",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awburst_e"
+        },
+        {
+          "name": "awlock",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awlock_e"
+        },
+        {
+          "name": "awcache",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awcache_e"
+        },
+        {
+          "name": "awprot",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awprot_e"
+        },
+        {
+          "name": "awqos",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]"
+        },
+        {
+          "name": "awregion",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]"
+        },
+        {
+          "name": "awuser",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "wdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[63:0]$[$:256]"
+        },
+        {
+          "name": "wstrb",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[$:256]"
+        },
+        {
+          "name": "wlast",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "wuser",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]"
+        },
+        {
+          "name": "bid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::bid_e"
+        },
+        {
+          "name": "bresp",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::bresp_e"
+        }
+      ],
+      "classes": [
+        "axi4_master_agent_config",
+        "axi4_master_tx",
+        "axi4_master_seq_item_converter",
+        "axi4_master_cfg_converter",
+        "axi4_master_write_sequencer",
+        "axi4_master_read_sequencer",
+        "axi4_master_driver_proxy",
+        "axi4_master_monitor_proxy",
+        "axi4_master_coverage",
+        "axi4_master_agent"
+      ],
+      "class_count": 10
+    },
+    "slave_agent": {
+      "description": "axi4 Slave Agent",
+      "color": "#4A148C",
+      "ports": [
+        {
+          "name": "slave_memory",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[longint]"
+        },
+        {
+          "name": "fifo_memory",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[$]"
+        },
+        {
+          "name": "awaddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "awid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awid_e"
+        },
+        {
+          "name": "awlen",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]"
+        },
+        {
+          "name": "awsize",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awsize_e"
+        },
+        {
+          "name": "awburst",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awburst_e"
+        },
+        {
+          "name": "awlock",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awlock_e"
+        },
+        {
+          "name": "awcache",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awcache_e"
+        },
+        {
+          "name": "awqos",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]"
+        },
+        {
+          "name": "awprot",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::awprot_e"
+        },
+        {
+          "name": "endian",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::endian_e"
+        },
+        {
+          "name": "wdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[63:0]$[$:256]"
+        },
+        {
+          "name": "wstrb",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[$:256]"
+        },
+        {
+          "name": "wlast",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "wuser",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]"
+        },
+        {
+          "name": "bid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::bid_e"
+        },
+        {
+          "name": "bresp",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::bresp_e"
+        },
+        {
+          "name": "buser",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]"
+        },
+        {
+          "name": "arid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::arid_e"
+        },
+        {
+          "name": "araddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "arlen",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]"
+        },
+        {
+          "name": "arsize",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::arsize_e"
+        },
+        {
+          "name": "arburst",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::arburst_e"
+        },
+        {
+          "name": "arlock",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::arlock_e"
+        },
+        {
+          "name": "arcache",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::arcache_e"
+        },
+        {
+          "name": "arprot",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::arprot_e"
+        },
+        {
+          "name": "arregion",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "arqos",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]"
+        },
+        {
+          "name": "rid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::rid_e"
+        }
+      ],
+      "classes": [
+        "axi4_slave_memory",
+        "axi4_slave_tx",
+        "axi4_slave_agent_config",
+        "axi4_slave_seq_item_converter",
+        "axi4_slave_cfg_converter",
+        "axi4_slave_coverage",
+        "axi4_slave_write_sequencer",
+        "axi4_slave_read_sequencer",
+        "axi4_slave_driver_proxy",
+        "axi4_slave_monitor_proxy",
+        "axi4_slave_agent"
+      ],
+      "class_count": 11
+    },
+    "iface_axi4_if": {
+      "description": "Interface: axi4_if",
+      "color": "#E65100",
+      "ports": [
+        {
+          "name": "awid",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "awaddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "awlen",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "awsize",
+          "direction": "InOut",
+          "width": 3,
+          "type": "logic"
+        },
+        {
+          "name": "awburst",
+          "direction": "InOut",
+          "width": 2,
+          "type": "logic"
+        },
+        {
+          "name": "awlock",
+          "direction": "InOut",
+          "width": 2,
+          "type": "logic"
+        },
+        {
+          "name": "awcache",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "awprot",
+          "direction": "InOut",
+          "width": 3,
+          "type": "logic"
+        },
+        {
+          "name": "awqos",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "awregion",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "awuser",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "awvalid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "awready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "wdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "wstrb",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "wlast",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "wuser",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "wvalid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "wready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "bid",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "bresp",
+          "direction": "InOut",
+          "width": 2,
+          "type": "logic"
+        },
+        {
+          "name": "buser",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "bvalid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "bready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "arid",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "araddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "arlen",
+          "direction": "InOut",
+          "width": 8,
+          "type": "logic"
+        },
+        {
+          "name": "arsize",
+          "direction": "InOut",
+          "width": 3,
+          "type": "logic"
+        },
+        {
+          "name": "arburst",
+          "direction": "InOut",
+          "width": 2,
+          "type": "logic"
+        },
+        {
+          "name": "arlock",
+          "direction": "InOut",
+          "width": 2,
+          "type": "logic"
+        },
+        {
+          "name": "arcache",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "arprot",
+          "direction": "InOut",
+          "width": 3,
+          "type": "logic"
+        },
+        {
+          "name": "arqos",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "arregion",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "aruser",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "arvalid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "arready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "rid",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "rdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "rresp",
+          "direction": "InOut",
+          "width": 2,
+          "type": "logic"
+        },
+        {
+          "name": "rlast",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "ruser",
+          "direction": "InOut",
+          "width": 4,
+          "type": "logic"
+        },
+        {
+          "name": "rvalid",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "rready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        }
+      ]
+    },
+    "sequences": {
+      "description": "axi4 Sequences (230 classes)",
+      "color": "#F57F17",
+      "ports": [],
+      "classes": [
+        "axi4_master_base_seq",
+        "axi4_master_bk_base_seq",
+        "axi4_master_nbk_base_seq",
+        "axi4_master_write_seq",
+        "axi4_master_read_seq",
+        "axi4_master_bk_write_seq",
+        "axi4_master_bk_read_seq",
+        "axi4_master_nbk_write_seq",
+        "axi4_master_nbk_read_seq",
+        "axi4_master_bk_write_8b_transfer_seq",
+        "axi4_master_bk_write_16b_transfer_seq",
+        "axi4_master_bk_write_32b_transfer_seq",
+        "axi4_master_bk_write_64b_transfer_seq",
+        "axi4_master_bk_write_incr_burst_seq",
+        "axi4_master_bk_write_wrap_burst_seq",
+        "axi4_master_bk_write_okay_resp_seq",
+        "axi4_master_bk_write_exokay_resp_seq",
+        "axi4_master_bk_write_rand_seq",
+        "axi4_master_bk_write_slave_error_seq",
+        "axi4_master_bk_write_unaligned_addr_seq"
+      ],
+      "total_classes": 230
+    },
+    "tests": {
+      "description": "axi4 Tests (71 classes)",
+      "color": "#880E4F",
+      "ports": [],
+      "classes": [
+        "axi4_base_test",
+        "assertion_base_test",
+        "axi4_write_test",
+        "axi4_read_test",
+        "axi4_write_read_test",
+        "axi4_non_outstanding_8b_write_data_test",
+        "axi4_non_outstanding_16b_write_data_test",
+        "axi4_non_outstanding_32b_write_data_test",
+        "axi4_non_outstanding_64b_write_data_test",
+        "axi4_non_outstanding_exokay_response_write_test",
+        "axi4_non_outstanding_okay_response_write_test",
+        "axi4_non_outstanding_incr_burst_write_test",
+        "axi4_non_outstanding_wrap_burst_write_test",
+        "axi4_32b_ordered_write_read_test",
+        "axi4_outstanding_8b_write_data_test",
+        "axi4_outstanding_16b_write_data_test",
+        "axi4_outstanding_32b_write_data_test",
+        "axi4_outstanding_64b_write_data_test",
+        "axi4_outstanding_exokay_write_response_test",
+        "axi4_outstanding_okay_write_response_test"
+      ],
+      "total_classes": 71
+    }
+  },
+  "instances": [
+    {
+      "name": "tests",
+      "module": "tests",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -18
+      },
+      "info": {
+        "class_count": 71,
+        "classes": [
+          "axi4_base_test",
+          "assertion_base_test",
+          "axi4_write_test",
+          "axi4_read_test",
+          "axi4_write_read_test",
+          "axi4_non_outstanding_8b_write_data_test",
+          "axi4_non_outstanding_16b_write_data_test",
+          "axi4_non_outstanding_32b_write_data_test",
+          "axi4_non_outstanding_64b_write_data_test",
+          "axi4_non_outstanding_exokay_response_write_test",
+          "axi4_non_outstanding_okay_response_write_test",
+          "axi4_non_outstanding_incr_burst_write_test",
+          "axi4_non_outstanding_wrap_burst_write_test",
+          "axi4_32b_ordered_write_read_test",
+          "axi4_outstanding_8b_write_data_test"
+        ]
+      }
+    },
+    {
+      "name": "env",
+      "module": "env",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -8
+      },
+      "info": {
+        "class_count": 4,
+        "classes": [
+          "axi4_env_config",
+          "axi4_virtual_sequencer",
+          "axi4_scoreboard",
+          "axi4_env"
+        ],
+        "description": "axi4 UVM Environment"
+      }
+    },
+    {
+      "name": "sequences",
+      "module": "sequences",
+      "position": {
+        "x": -18,
+        "y": 0,
+        "z": 0
+      },
+      "info": {
+        "class_count": 230,
+        "classes": [
+          "axi4_master_base_seq",
+          "axi4_master_bk_base_seq",
+          "axi4_master_nbk_base_seq",
+          "axi4_master_write_seq",
+          "axi4_master_read_seq",
+          "axi4_master_bk_write_seq",
+          "axi4_master_bk_read_seq",
+          "axi4_master_nbk_write_seq",
+          "axi4_master_nbk_read_seq",
+          "axi4_master_bk_write_8b_transfer_seq",
+          "axi4_master_bk_write_16b_transfer_seq",
+          "axi4_master_bk_write_32b_transfer_seq",
+          "axi4_master_bk_write_64b_transfer_seq",
+          "axi4_master_bk_write_incr_burst_seq",
+          "axi4_master_bk_write_wrap_burst_seq"
+        ]
+      }
+    },
+    {
+      "name": "master_agent",
+      "module": "master_agent",
+      "position": {
+        "x": -8,
+        "y": 0,
+        "z": 2
+      },
+      "info": {
+        "class_count": 10,
+        "classes": [
+          "axi4_master_agent_config",
+          "axi4_master_tx",
+          "axi4_master_seq_item_converter",
+          "axi4_master_cfg_converter",
+          "axi4_master_write_sequencer",
+          "axi4_master_read_sequencer",
+          "axi4_master_driver_proxy",
+          "axi4_master_monitor_proxy",
+          "axi4_master_coverage",
+          "axi4_master_agent"
+        ],
+        "description": "axi4 Master Agent"
+      }
+    },
+    {
+      "name": "slave_agent",
+      "module": "slave_agent",
+      "position": {
+        "x": 8,
+        "y": 0,
+        "z": 2
+      },
+      "info": {
+        "class_count": 11,
+        "classes": [
+          "axi4_slave_memory",
+          "axi4_slave_tx",
+          "axi4_slave_agent_config",
+          "axi4_slave_seq_item_converter",
+          "axi4_slave_cfg_converter",
+          "axi4_slave_coverage",
+          "axi4_slave_write_sequencer",
+          "axi4_slave_read_sequencer",
+          "axi4_slave_driver_proxy",
+          "axi4_slave_monitor_proxy",
+          "axi4_slave_agent"
+        ],
+        "description": "axi4 Slave Agent"
+      }
+    },
+    {
+      "name": "axi4_if",
+      "module": "iface_axi4_if",
+      "position": {
+        "x": -10,
+        "y": 0,
+        "z": 14
+      },
+      "info": {
+        "signal_count": 44,
+        "signals": [
+          {
+            "name": "awid",
+            "type": "logic"
+          },
+          {
+            "name": "awaddr",
+            "type": "logic"
+          },
+          {
+            "name": "awlen",
+            "type": "logic"
+          },
+          {
+            "name": "awsize",
+            "type": "logic"
+          },
+          {
+            "name": "awburst",
+            "type": "logic"
+          },
+          {
+            "name": "awlock",
+            "type": "logic"
+          },
+          {
+            "name": "awcache",
+            "type": "logic"
+          },
+          {
+            "name": "awprot",
+            "type": "logic"
+          },
+          {
+            "name": "awqos",
+            "type": "logic"
+          },
+          {
+            "name": "awregion",
+            "type": "logic"
+          },
+          {
+            "name": "awuser",
+            "type": "logic"
+          },
+          {
+            "name": "awvalid",
+            "type": "logic"
+          },
+          {
+            "name": "awready",
+            "type": "logic"
+          },
+          {
+            "name": "wdata",
+            "type": "logic"
+          },
+          {
+            "name": "wstrb",
+            "type": "logic"
+          },
+          {
+            "name": "wlast",
+            "type": "logic"
+          },
+          {
+            "name": "wuser",
+            "type": "logic"
+          },
+          {
+            "name": "wvalid",
+            "type": "logic"
+          },
+          {
+            "name": "wready",
+            "type": "logic"
+          },
+          {
+            "name": "bid",
+            "type": "logic"
+          },
+          {
+            "name": "bresp",
+            "type": "logic"
+          },
+          {
+            "name": "buser",
+            "type": "logic"
+          },
+          {
+            "name": "bvalid",
+            "type": "logic"
+          },
+          {
+            "name": "bready",
+            "type": "logic"
+          },
+          {
+            "name": "arid",
+            "type": "logic"
+          },
+          {
+            "name": "araddr",
+            "type": "logic"
+          },
+          {
+            "name": "arlen",
+            "type": "logic"
+          },
+          {
+            "name": "arsize",
+            "type": "logic"
+          },
+          {
+            "name": "arburst",
+            "type": "logic"
+          },
+          {
+            "name": "arlock",
+            "type": "logic"
+          },
+          {
+            "name": "arcache",
+            "type": "logic"
+          },
+          {
+            "name": "arprot",
+            "type": "logic"
+          },
+          {
+            "name": "arqos",
+            "type": "logic"
+          },
+          {
+            "name": "arregion",
+            "type": "logic"
+          },
+          {
+            "name": "aruser",
+            "type": "logic"
+          },
+          {
+            "name": "arvalid",
+            "type": "logic"
+          },
+          {
+            "name": "arready",
+            "type": "logic"
+          },
+          {
+            "name": "rid",
+            "type": "logic"
+          },
+          {
+            "name": "rdata",
+            "type": "logic"
+          },
+          {
+            "name": "rresp",
+            "type": "logic"
+          },
+          {
+            "name": "rlast",
+            "type": "logic"
+          },
+          {
+            "name": "ruser",
+            "type": "logic"
+          },
+          {
+            "name": "rvalid",
+            "type": "logic"
+          },
+          {
+            "name": "rready",
+            "type": "logic"
+          }
+        ],
+        "description": "Interface: axi4_if"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "id": "test_to_env",
+      "type": "hierarchy",
+      "color": "#CE93D8",
+      "from": {
+        "instance": "tests",
+        "port": "env"
+      },
+      "to": {
+        "instance": "env",
+        "port": "create"
+      },
+      "signals": [
+        {
+          "name": "UVM hierarchy",
+          "width": 1
+        }
+      ],
+      "description": "Test creates and configures environment"
+    },
+    {
+      "id": "env_to_master",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "env",
+        "port": "master_agent"
+      },
+      "to": {
+        "instance": "master_agent",
+        "port": "parent"
+      },
+      "signals": [
+        {
+          "name": "agent_handle",
+          "width": 1
+        }
+      ],
+      "description": "Environment instantiates master agent"
+    },
+    {
+      "id": "env_to_slave",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "env",
+        "port": "slave_agent"
+      },
+      "to": {
+        "instance": "slave_agent",
+        "port": "parent"
+      },
+      "signals": [
+        {
+          "name": "agent_handle",
+          "width": 1
+        }
+      ],
+      "description": "Environment instantiates slave agent"
+    },
+    {
+      "id": "seq_to_master",
+      "type": "tlm",
+      "color": "#FFC107",
+      "from": {
+        "instance": "sequences",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "master_agent",
+        "port": "sequencer"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "Sequences drive transactions via sequencer"
+    },
+    {
+      "id": "master_to_axi4_if",
+      "type": "signal",
+      "color": "#FFC107",
+      "from": {
+        "instance": "master_agent",
+        "port": "vif"
+      },
+      "to": {
+        "instance": "axi4_if",
+        "port": "master_side"
+      },
+      "signals": [
+        {
+          "name": "awid",
+          "width": 4
+        },
+        {
+          "name": "awaddr",
+          "width": 1
+        },
+        {
+          "name": "awlen",
+          "width": 4
+        },
+        {
+          "name": "awsize",
+          "width": 3
+        },
+        {
+          "name": "awburst",
+          "width": 2
+        },
+        {
+          "name": "awlock",
+          "width": 2
+        },
+        {
+          "name": "awcache",
+          "width": 4
+        },
+        {
+          "name": "awprot",
+          "width": 3
+        },
+        {
+          "name": "awqos",
+          "width": 4
+        },
+        {
+          "name": "awregion",
+          "width": 4
+        },
+        {
+          "name": "awuser",
+          "width": 1
+        },
+        {
+          "name": "awvalid",
+          "width": 1
+        },
+        {
+          "name": "awready",
+          "width": 1
+        },
+        {
+          "name": "wdata",
+          "width": 1
+        },
+        {
+          "name": "wstrb",
+          "width": 1
+        },
+        {
+          "name": "wlast",
+          "width": 1
+        },
+        {
+          "name": "wuser",
+          "width": 4
+        },
+        {
+          "name": "wvalid",
+          "width": 1
+        },
+        {
+          "name": "wready",
+          "width": 1
+        },
+        {
+          "name": "bid",
+          "width": 4
+        },
+        {
+          "name": "bresp",
+          "width": 2
+        },
+        {
+          "name": "buser",
+          "width": 4
+        },
+        {
+          "name": "bvalid",
+          "width": 1
+        },
+        {
+          "name": "bready",
+          "width": 1
+        },
+        {
+          "name": "arid",
+          "width": 4
+        },
+        {
+          "name": "araddr",
+          "width": 1
+        },
+        {
+          "name": "arlen",
+          "width": 8
+        },
+        {
+          "name": "arsize",
+          "width": 3
+        },
+        {
+          "name": "arburst",
+          "width": 2
+        },
+        {
+          "name": "arlock",
+          "width": 2
+        },
+        {
+          "name": "arcache",
+          "width": 4
+        },
+        {
+          "name": "arprot",
+          "width": 3
+        },
+        {
+          "name": "arqos",
+          "width": 4
+        },
+        {
+          "name": "arregion",
+          "width": 4
+        },
+        {
+          "name": "aruser",
+          "width": 4
+        },
+        {
+          "name": "arvalid",
+          "width": 1
+        },
+        {
+          "name": "arready",
+          "width": 1
+        },
+        {
+          "name": "rid",
+          "width": 4
+        },
+        {
+          "name": "rdata",
+          "width": 1
+        },
+        {
+          "name": "rresp",
+          "width": 2
+        },
+        {
+          "name": "rlast",
+          "width": 1
+        },
+        {
+          "name": "ruser",
+          "width": 4
+        },
+        {
+          "name": "rvalid",
+          "width": 1
+        },
+        {
+          "name": "rready",
+          "width": 1
+        }
+      ],
+      "description": "Master \u2194 axi4_if (44 signals)"
+    },
+    {
+      "id": "axi4_if_to_slave",
+      "type": "signal",
+      "color": "#FFC107",
+      "from": {
+        "instance": "axi4_if",
+        "port": "slave_side"
+      },
+      "to": {
+        "instance": "slave_agent",
+        "port": "vif"
+      },
+      "signals": [
+        {
+          "name": "awid",
+          "width": 4
+        },
+        {
+          "name": "awaddr",
+          "width": 1
+        },
+        {
+          "name": "awlen",
+          "width": 4
+        },
+        {
+          "name": "awsize",
+          "width": 3
+        },
+        {
+          "name": "awburst",
+          "width": 2
+        },
+        {
+          "name": "awlock",
+          "width": 2
+        },
+        {
+          "name": "awcache",
+          "width": 4
+        },
+        {
+          "name": "awprot",
+          "width": 3
+        },
+        {
+          "name": "awqos",
+          "width": 4
+        },
+        {
+          "name": "awregion",
+          "width": 4
+        },
+        {
+          "name": "awuser",
+          "width": 1
+        },
+        {
+          "name": "awvalid",
+          "width": 1
+        },
+        {
+          "name": "awready",
+          "width": 1
+        },
+        {
+          "name": "wdata",
+          "width": 1
+        },
+        {
+          "name": "wstrb",
+          "width": 1
+        },
+        {
+          "name": "wlast",
+          "width": 1
+        },
+        {
+          "name": "wuser",
+          "width": 4
+        },
+        {
+          "name": "wvalid",
+          "width": 1
+        },
+        {
+          "name": "wready",
+          "width": 1
+        },
+        {
+          "name": "bid",
+          "width": 4
+        },
+        {
+          "name": "bresp",
+          "width": 2
+        },
+        {
+          "name": "buser",
+          "width": 4
+        },
+        {
+          "name": "bvalid",
+          "width": 1
+        },
+        {
+          "name": "bready",
+          "width": 1
+        },
+        {
+          "name": "arid",
+          "width": 4
+        },
+        {
+          "name": "araddr",
+          "width": 1
+        },
+        {
+          "name": "arlen",
+          "width": 8
+        },
+        {
+          "name": "arsize",
+          "width": 3
+        },
+        {
+          "name": "arburst",
+          "width": 2
+        },
+        {
+          "name": "arlock",
+          "width": 2
+        },
+        {
+          "name": "arcache",
+          "width": 4
+        },
+        {
+          "name": "arprot",
+          "width": 3
+        },
+        {
+          "name": "arqos",
+          "width": 4
+        },
+        {
+          "name": "arregion",
+          "width": 4
+        },
+        {
+          "name": "aruser",
+          "width": 4
+        },
+        {
+          "name": "arvalid",
+          "width": 1
+        },
+        {
+          "name": "arready",
+          "width": 1
+        },
+        {
+          "name": "rid",
+          "width": 4
+        },
+        {
+          "name": "rdata",
+          "width": 1
+        },
+        {
+          "name": "rresp",
+          "width": 2
+        },
+        {
+          "name": "rlast",
+          "width": 1
+        },
+        {
+          "name": "ruser",
+          "width": 4
+        },
+        {
+          "name": "rvalid",
+          "width": 1
+        },
+        {
+          "name": "rready",
+          "width": 1
+        }
+      ],
+      "description": "axi4_if \u2194 Slave (44 signals)"
+    }
+  ],
+  "groups": [
+    {
+      "name": "AXI4 Testbench",
+      "instances": [
+        "tests",
+        "env",
+        "sequences",
+        "master_agent",
+        "slave_agent",
+        "axi4_if"
+      ],
+      "color": "#37474F",
+      "description": "Top-level AXI4 UVC testbench"
+    },
+    {
+      "name": "AXI4 Environment",
+      "instances": [
+        "env",
+        "master_agent",
+        "slave_agent",
+        "sequences"
+      ],
+      "color": "#1B5E20",
+      "description": "AXI4 UVM environment with agents"
+    }
+  ]
+}

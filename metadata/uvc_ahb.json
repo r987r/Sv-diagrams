@@ -1,0 +1,1255 @@
+{
+  "design_name": "uvc_ahb",
+  "version": "1.0",
+  "description": "AHB UVC \u2013 50 classes, 18 bus signals, master/slave verification",
+  "source_repo": "https://github.com/r987r/blockify",
+  "metadata_type": "vip",
+  "protocol": "ahb",
+  "summary": {
+    "total_packages": 8,
+    "total_classes": 50,
+    "total_interfaces": 7,
+    "total_signals": 18
+  },
+  "testbench": {
+    "module_name": "tb_top",
+    "global_signals": [
+      {
+        "name": "clk",
+        "face": "bottom",
+        "color": "#00E676"
+      },
+      {
+        "name": "rst_n",
+        "face": "top",
+        "color": "#FF5252"
+      }
+    ]
+  },
+  "modules": {
+    "testbench": {
+      "description": "AHB UVC Testbench",
+      "color": "#37474F",
+      "ports": []
+    },
+    "env": {
+      "description": "ahb Environment",
+      "color": "#1B5E20",
+      "ports": [
+        {
+          "name": "hasScoreboard",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hasVirtualSequencer",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "noOfMasters",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "noOfSlaves",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "operationMode",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbOperationEnum"
+        },
+        {
+          "name": "ahbMasterAgentConfig",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbMasterAgentConfig$[]"
+        },
+        {
+          "name": "ahbSlaveAgentConfig",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbSlaveAgentConfig$[]"
+        },
+        {
+          "name": "ahbMasterSequencer",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbMasterSequencer"
+        },
+        {
+          "name": "ahbSlaveSequencer",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbSlaveSequencer"
+        },
+        {
+          "name": "ahbMasterTransaction",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbMasterTransaction"
+        },
+        {
+          "name": "ahbSlaveTransaction",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbSlaveTransaction"
+        },
+        {
+          "name": "ahbEnvironmentConfig",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbEnvironmentConfig"
+        },
+        {
+          "name": "ahbMasterAnalysisFifo",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo$[]"
+        },
+        {
+          "name": "ahbSlaveAnalysisFifo",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo$[]"
+        },
+        {
+          "name": "ahbMasterTransactionCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "ahbSlaveTransactionCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "VerifiedMasterHwdataCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "FailedMasterHwdataCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "VerifiedMasterHaddrCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "FailedMasterHaddrCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "VerifiedMasterHwriteCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "FailedMasterHwriteCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "VerifiedSlaveHrdataCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "FailedSlaveHrdataCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "VerifiedMasterHprotCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "FailedMasterHprotCount",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "indexMaster",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "indexSlave",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "ahbMasterAnalysisFifo",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo$[]"
+        },
+        {
+          "name": "ahbSlaveAnalysisFifo",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo$[]"
+        }
+      ],
+      "classes": [
+        "AhbEnvironmentConfig",
+        "AhbVirtualSequencer",
+        "AhbScoreboard",
+        "AhbEnvironment"
+      ],
+      "class_count": 4
+    },
+    "master_agent": {
+      "description": "ahb Master Agent",
+      "color": "#1565C0",
+      "ports": [
+        {
+          "name": "is_active",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_active_passive_enum"
+        },
+        {
+          "name": "hasCoverage",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "haddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "masterMemory",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[17:0]"
+        },
+        {
+          "name": "masterMinimumAddressRangeArray",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[int]"
+        },
+        {
+          "name": "masterMaximumAddressRangeArray",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[int]"
+        },
+        {
+          "name": "noOfWaitStates",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "haddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "hselx",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[0:0]"
+        },
+        {
+          "name": "hburst",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbBurstEnum"
+        },
+        {
+          "name": "hmastlock",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hprot",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbProtectionEnum"
+        },
+        {
+          "name": "hsize",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbHsizeEnum"
+        },
+        {
+          "name": "hnonsec",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hexcl",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hmaster",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[0:0]"
+        },
+        {
+          "name": "htrans",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbTransferEnum"
+        },
+        {
+          "name": "hwdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[$:16]"
+        },
+        {
+          "name": "hwstrb",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]$[$:16]"
+        },
+        {
+          "name": "hwrite",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbOperationEnum"
+        },
+        {
+          "name": "hrdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[$:16]"
+        },
+        {
+          "name": "hreadyout",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hresp",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbRespEnum"
+        },
+        {
+          "name": "hexokay",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "noOfWaitStatesDetected",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "busyControl",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit$[]"
+        },
+        {
+          "name": "ahbMasterAgentConfig",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbMasterAgentConfig"
+        },
+        {
+          "name": "ahbMasterTransaction",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbMasterTransaction"
+        },
+        {
+          "name": "ahbMasterDriverBFM",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbMasterDriverBFM"
+        }
+      ],
+      "classes": [
+        "AhbMasterAgentConfig",
+        "AhbMasterTransaction",
+        "AhbMasterSequenceItemConverter",
+        "AhbMasterConfigConverter",
+        "AhbMasterSequencer",
+        "AhbMasterDriverProxy",
+        "AhbMasterMonitorProxy",
+        "AhbMasterCoverage",
+        "AhbMasterAgent"
+      ],
+      "class_count": 9
+    },
+    "slave_agent": {
+      "description": "ahb Slave Agent",
+      "color": "#4A148C",
+      "ports": [
+        {
+          "name": "is_active",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_active_passive_enum"
+        },
+        {
+          "name": "hasCoverage",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "maximumAddress",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "minimumAddress",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "slaveMemory",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]$[longint]"
+        },
+        {
+          "name": "haddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "noOfWaitStates",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "haddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]"
+        },
+        {
+          "name": "hselx",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[0:0]"
+        },
+        {
+          "name": "hburst",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbBurstEnum"
+        },
+        {
+          "name": "hmastlock",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hprot",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbProtectionEnum"
+        },
+        {
+          "name": "hsize",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbHsizeEnum"
+        },
+        {
+          "name": "hnonsec",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hexcl",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hmaster",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[0:0]"
+        },
+        {
+          "name": "htrans",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbTransferEnum"
+        },
+        {
+          "name": "hwdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[$:16]"
+        },
+        {
+          "name": "hwstrb",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[3:0]$[$:16]"
+        },
+        {
+          "name": "hwrite",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbOperationEnum"
+        },
+        {
+          "name": "hrdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[31:0]$[$:16]"
+        },
+        {
+          "name": "hreadyout",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hresp",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbGlobalPackage::ahbRespEnum"
+        },
+        {
+          "name": "hexokay",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "hready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "choosePacketData",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "noOfWaitStates",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "busyControl",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit$[]"
+        },
+        {
+          "name": "ahbSlaveAgentConfig",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbSlaveAgentConfig"
+        },
+        {
+          "name": "ahbSlaveTransaction",
+          "direction": "InOut",
+          "width": 1,
+          "type": "AhbSlaveTransaction"
+        }
+      ],
+      "classes": [
+        "AhbSlaveAgentConfig",
+        "AhbSlaveTransaction",
+        "AhbSlaveSequenceItemConverter",
+        "AhbSlaveConfigConverter",
+        "AhbSlaveSequencer",
+        "AhbSlaveDriverProxy",
+        "AhbSlaveMonitorProxy",
+        "AhbSlaveCoverage",
+        "AhbSlaveAgent"
+      ],
+      "class_count": 9
+    },
+    "iface_AhbInterface": {
+      "description": "Interface: AhbInterface",
+      "color": "#E65100",
+      "ports": [
+        {
+          "name": "haddr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hselx",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hburst",
+          "direction": "InOut",
+          "width": 3,
+          "type": "logic"
+        },
+        {
+          "name": "hmastlock",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hprot",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hsize",
+          "direction": "InOut",
+          "width": 3,
+          "type": "logic"
+        },
+        {
+          "name": "hnonsec",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hexcl",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hmaster",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "htrans",
+          "direction": "InOut",
+          "width": 2,
+          "type": "logic"
+        },
+        {
+          "name": "hwdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hwstrb",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hwrite",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hrdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hreadyout",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hresp",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hexokay",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        },
+        {
+          "name": "hready",
+          "direction": "InOut",
+          "width": 1,
+          "type": "logic"
+        }
+      ]
+    },
+    "sequences": {
+      "description": "ahb Sequences (4 classes)",
+      "color": "#F57F17",
+      "ports": [],
+      "classes": [
+        "AhbMasterBaseSequence",
+        "AhbMasterSequence",
+        "AhbSlaveBaseSequence",
+        "AhbSlaveSequence"
+      ],
+      "total_classes": 4
+    },
+    "tests": {
+      "description": "ahb Tests (12 classes)",
+      "color": "#880E4F",
+      "ports": [],
+      "classes": [
+        "AhbBaseTest",
+        "AhbWriteTest",
+        "AhbReadTest",
+        "AhbSingleWriteTest",
+        "AhbSingleReadTest",
+        "AhbWriteWithBusyTest",
+        "AhbReadWithBusyTest",
+        "AhbSingleWriteWithWaitStateTest",
+        "AhbSingleReadWithWaitStateTest",
+        "AhbWriteWithWaitStateTest",
+        "AhbReadWithWaitStateTest",
+        "AhbWriteFollowedByReadTest"
+      ],
+      "total_classes": 12
+    }
+  },
+  "instances": [
+    {
+      "name": "tests",
+      "module": "tests",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -18
+      },
+      "info": {
+        "class_count": 12,
+        "classes": [
+          "AhbBaseTest",
+          "AhbWriteTest",
+          "AhbReadTest",
+          "AhbSingleWriteTest",
+          "AhbSingleReadTest",
+          "AhbWriteWithBusyTest",
+          "AhbReadWithBusyTest",
+          "AhbSingleWriteWithWaitStateTest",
+          "AhbSingleReadWithWaitStateTest",
+          "AhbWriteWithWaitStateTest",
+          "AhbReadWithWaitStateTest",
+          "AhbWriteFollowedByReadTest"
+        ]
+      }
+    },
+    {
+      "name": "env",
+      "module": "env",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -8
+      },
+      "info": {
+        "class_count": 4,
+        "classes": [
+          "AhbEnvironmentConfig",
+          "AhbVirtualSequencer",
+          "AhbScoreboard",
+          "AhbEnvironment"
+        ],
+        "description": "ahb UVM Environment"
+      }
+    },
+    {
+      "name": "sequences",
+      "module": "sequences",
+      "position": {
+        "x": -18,
+        "y": 0,
+        "z": 0
+      },
+      "info": {
+        "class_count": 4,
+        "classes": [
+          "AhbMasterBaseSequence",
+          "AhbMasterSequence",
+          "AhbSlaveBaseSequence",
+          "AhbSlaveSequence"
+        ]
+      }
+    },
+    {
+      "name": "master_agent",
+      "module": "master_agent",
+      "position": {
+        "x": -8,
+        "y": 0,
+        "z": 2
+      },
+      "info": {
+        "class_count": 9,
+        "classes": [
+          "AhbMasterAgentConfig",
+          "AhbMasterTransaction",
+          "AhbMasterSequenceItemConverter",
+          "AhbMasterConfigConverter",
+          "AhbMasterSequencer",
+          "AhbMasterDriverProxy",
+          "AhbMasterMonitorProxy",
+          "AhbMasterCoverage",
+          "AhbMasterAgent"
+        ],
+        "description": "ahb Master Agent"
+      }
+    },
+    {
+      "name": "slave_agent",
+      "module": "slave_agent",
+      "position": {
+        "x": 8,
+        "y": 0,
+        "z": 2
+      },
+      "info": {
+        "class_count": 9,
+        "classes": [
+          "AhbSlaveAgentConfig",
+          "AhbSlaveTransaction",
+          "AhbSlaveSequenceItemConverter",
+          "AhbSlaveConfigConverter",
+          "AhbSlaveSequencer",
+          "AhbSlaveDriverProxy",
+          "AhbSlaveMonitorProxy",
+          "AhbSlaveCoverage",
+          "AhbSlaveAgent"
+        ],
+        "description": "ahb Slave Agent"
+      }
+    },
+    {
+      "name": "AhbInterface",
+      "module": "iface_AhbInterface",
+      "position": {
+        "x": -10,
+        "y": 0,
+        "z": 14
+      },
+      "info": {
+        "signal_count": 18,
+        "signals": [
+          {
+            "name": "haddr",
+            "type": "logic"
+          },
+          {
+            "name": "hselx",
+            "type": "logic"
+          },
+          {
+            "name": "hburst",
+            "type": "logic"
+          },
+          {
+            "name": "hmastlock",
+            "type": "logic"
+          },
+          {
+            "name": "hprot",
+            "type": "logic"
+          },
+          {
+            "name": "hsize",
+            "type": "logic"
+          },
+          {
+            "name": "hnonsec",
+            "type": "logic"
+          },
+          {
+            "name": "hexcl",
+            "type": "logic"
+          },
+          {
+            "name": "hmaster",
+            "type": "logic"
+          },
+          {
+            "name": "htrans",
+            "type": "logic"
+          },
+          {
+            "name": "hwdata",
+            "type": "logic"
+          },
+          {
+            "name": "hwstrb",
+            "type": "logic"
+          },
+          {
+            "name": "hwrite",
+            "type": "logic"
+          },
+          {
+            "name": "hrdata",
+            "type": "logic"
+          },
+          {
+            "name": "hreadyout",
+            "type": "logic"
+          },
+          {
+            "name": "hresp",
+            "type": "logic"
+          },
+          {
+            "name": "hexokay",
+            "type": "logic"
+          },
+          {
+            "name": "hready",
+            "type": "logic"
+          }
+        ],
+        "description": "Interface: AhbInterface"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "id": "test_to_env",
+      "type": "hierarchy",
+      "color": "#CE93D8",
+      "from": {
+        "instance": "tests",
+        "port": "env"
+      },
+      "to": {
+        "instance": "env",
+        "port": "create"
+      },
+      "signals": [
+        {
+          "name": "UVM hierarchy",
+          "width": 1
+        }
+      ],
+      "description": "Test creates and configures environment"
+    },
+    {
+      "id": "env_to_master",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "env",
+        "port": "master_agent"
+      },
+      "to": {
+        "instance": "master_agent",
+        "port": "parent"
+      },
+      "signals": [
+        {
+          "name": "agent_handle",
+          "width": 1
+        }
+      ],
+      "description": "Environment instantiates master agent"
+    },
+    {
+      "id": "env_to_slave",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "env",
+        "port": "slave_agent"
+      },
+      "to": {
+        "instance": "slave_agent",
+        "port": "parent"
+      },
+      "signals": [
+        {
+          "name": "agent_handle",
+          "width": 1
+        }
+      ],
+      "description": "Environment instantiates slave agent"
+    },
+    {
+      "id": "seq_to_master",
+      "type": "tlm",
+      "color": "#FFC107",
+      "from": {
+        "instance": "sequences",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "master_agent",
+        "port": "sequencer"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "Sequences drive transactions via sequencer"
+    },
+    {
+      "id": "master_to_AhbInterface",
+      "type": "signal",
+      "color": "#FFC107",
+      "from": {
+        "instance": "master_agent",
+        "port": "vif"
+      },
+      "to": {
+        "instance": "AhbInterface",
+        "port": "master_side"
+      },
+      "signals": [
+        {
+          "name": "haddr",
+          "width": 1
+        },
+        {
+          "name": "hselx",
+          "width": 1
+        },
+        {
+          "name": "hburst",
+          "width": 3
+        },
+        {
+          "name": "hmastlock",
+          "width": 1
+        },
+        {
+          "name": "hprot",
+          "width": 1
+        },
+        {
+          "name": "hsize",
+          "width": 3
+        },
+        {
+          "name": "hnonsec",
+          "width": 1
+        },
+        {
+          "name": "hexcl",
+          "width": 1
+        },
+        {
+          "name": "hmaster",
+          "width": 1
+        },
+        {
+          "name": "htrans",
+          "width": 2
+        },
+        {
+          "name": "hwdata",
+          "width": 1
+        },
+        {
+          "name": "hwstrb",
+          "width": 1
+        },
+        {
+          "name": "hwrite",
+          "width": 1
+        },
+        {
+          "name": "hrdata",
+          "width": 1
+        },
+        {
+          "name": "hreadyout",
+          "width": 1
+        },
+        {
+          "name": "hresp",
+          "width": 1
+        },
+        {
+          "name": "hexokay",
+          "width": 1
+        },
+        {
+          "name": "hready",
+          "width": 1
+        }
+      ],
+      "description": "Master \u2194 AhbInterface (18 signals)"
+    },
+    {
+      "id": "AhbInterface_to_slave",
+      "type": "signal",
+      "color": "#FFC107",
+      "from": {
+        "instance": "AhbInterface",
+        "port": "slave_side"
+      },
+      "to": {
+        "instance": "slave_agent",
+        "port": "vif"
+      },
+      "signals": [
+        {
+          "name": "haddr",
+          "width": 1
+        },
+        {
+          "name": "hselx",
+          "width": 1
+        },
+        {
+          "name": "hburst",
+          "width": 3
+        },
+        {
+          "name": "hmastlock",
+          "width": 1
+        },
+        {
+          "name": "hprot",
+          "width": 1
+        },
+        {
+          "name": "hsize",
+          "width": 3
+        },
+        {
+          "name": "hnonsec",
+          "width": 1
+        },
+        {
+          "name": "hexcl",
+          "width": 1
+        },
+        {
+          "name": "hmaster",
+          "width": 1
+        },
+        {
+          "name": "htrans",
+          "width": 2
+        },
+        {
+          "name": "hwdata",
+          "width": 1
+        },
+        {
+          "name": "hwstrb",
+          "width": 1
+        },
+        {
+          "name": "hwrite",
+          "width": 1
+        },
+        {
+          "name": "hrdata",
+          "width": 1
+        },
+        {
+          "name": "hreadyout",
+          "width": 1
+        },
+        {
+          "name": "hresp",
+          "width": 1
+        },
+        {
+          "name": "hexokay",
+          "width": 1
+        },
+        {
+          "name": "hready",
+          "width": 1
+        }
+      ],
+      "description": "AhbInterface \u2194 Slave (18 signals)"
+    }
+  ],
+  "groups": [
+    {
+      "name": "AHB Testbench",
+      "instances": [
+        "tests",
+        "env",
+        "sequences",
+        "master_agent",
+        "slave_agent",
+        "AhbInterface"
+      ],
+      "color": "#37474F",
+      "description": "Top-level AHB UVC testbench"
+    },
+    {
+      "name": "AHB Environment",
+      "instances": [
+        "env",
+        "master_agent",
+        "slave_agent",
+        "sequences"
+      ],
+      "color": "#1B5E20",
+      "description": "AHB UVM environment with agents"
+    }
+  ]
+}
