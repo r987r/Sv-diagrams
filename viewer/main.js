@@ -290,46 +290,176 @@ function computeBounds(items, pad = 4) {
 }
 
 /**
- * Route an orthogonal L-shaped connection, with simple obstacle avoidance.
+ * Test whether a line segment (P→Q) intersects an axis-aligned bounding box.
+ * Uses the slab method, clamped to segment parameter range [0,1].
  */
-function routeConnection(ax, ay, az, bx, by, bz, obstacles) {
-  // Direct line if aligned on X or Z
-  if (Math.abs(ax - bx) < 0.5 || Math.abs(az - bz) < 0.5) {
-    return [[ax, ay, az], [bx, by, bz]];
+function segmentIntersectsAABB(px, py, pz, qx, qy, qz, box) {
+  const dx = qx - px, dy = qy - py, dz = qz - pz;
+  let tMin = 0, tMax = 1;
+
+  // X slab
+  if (Math.abs(dx) < 1e-8) {
+    if (px < box.xMin || px > box.xMax) return false;
+  } else {
+    let t1 = (box.xMin - px) / dx;
+    let t2 = (box.xMax - px) / dx;
+    if (t1 > t2) { const tmp = t1; t1 = t2; t2 = tmp; }
+    tMin = Math.max(tMin, t1);
+    tMax = Math.min(tMax, t2);
+    if (tMin > tMax) return false;
   }
 
-  // L-shape: go horizontal then vertical (in XZ plane)
-  const cornerY = (ay + by) / 2;
-  const midX = (ax + bx) / 2;
-  const midZ = (az + bz) / 2;
+  // Y slab
+  if (Math.abs(dy) < 1e-8) {
+    if (py < box.yMin || py > box.yMax) return false;
+  } else {
+    let t1 = (box.yMin - py) / dy;
+    let t2 = (box.yMax - py) / dy;
+    if (t1 > t2) { const tmp = t1; t1 = t2; t2 = tmp; }
+    tMin = Math.max(tMin, t1);
+    tMax = Math.min(tMax, t2);
+    if (tMin > tMax) return false;
+  }
 
-  // Check if corner route is blocked
-  let blocked = false;
-  if (obstacles) {
+  // Z slab
+  if (Math.abs(dz) < 1e-8) {
+    if (pz < box.zMin || pz > box.zMax) return false;
+  } else {
+    let t1 = (box.zMin - pz) / dz;
+    let t2 = (box.zMax - pz) / dz;
+    if (t1 > t2) { const tmp = t1; t1 = t2; t2 = tmp; }
+    tMin = Math.max(tMin, t1);
+    tMax = Math.min(tMax, t2);
+    if (tMin > tMax) return false;
+  }
+
+  return true;
+}
+
+/**
+ * Check whether any segment in a multi-waypoint path intersects any obstacle.
+ */
+function routeIntersectsObstacles(waypoints, obstacles) {
+  for (let i = 0; i < waypoints.length - 1; i++) {
+    const [px, py, pz] = waypoints[i];
+    const [qx, qy, qz] = waypoints[i + 1];
     for (const obs of obstacles) {
-      if (Math.abs(bx - obs.x) < obs.hw && Math.abs(az - obs.z) < obs.hh) {
-        blocked = true;
-        break;
+      if (segmentIntersectsAABB(px, py, pz, qx, qy, qz, obs)) {
+        return true;
       }
     }
   }
+  return false;
+}
 
-  if (blocked) {
-    // Route around: go up, across, down
-    const detourY = Math.max(ay, by) + 3;
-    return [
-      [ax, ay, az],
-      [ax, detourY, az],
-      [bx, detourY, bz],
-      [bx, by, bz],
-    ];
+/**
+ * Compute total path length for a set of waypoints.
+ */
+function pathLength(waypoints) {
+  let len = 0;
+  for (let i = 0; i < waypoints.length - 1; i++) {
+    const dx = waypoints[i + 1][0] - waypoints[i][0];
+    const dy = waypoints[i + 1][1] - waypoints[i][1];
+    const dz = waypoints[i + 1][2] - waypoints[i][2];
+    len += Math.sqrt(dx * dx + dy * dy + dz * dz);
+  }
+  return len;
+}
+
+/**
+ * Route a connection between two points using the full 3D space.
+ * Tries multiple strategies and picks the shortest route that avoids
+ * passing through any obstacle (block) the connection doesn't belong to.
+ *
+ * Strategies tried (in order):
+ *   1. Direct line
+ *   2. Two L-shape variants (change-X-first and change-Z-first)
+ *   3. 3D detour routes: offset in ±Z, ±X, and ±Y around all obstacles
+ */
+function routeConnection(ax, ay, az, bx, by, bz, obstacles) {
+  // 1. Direct line
+  const direct = [[ax, ay, az], [bx, by, bz]];
+  if (!obstacles || obstacles.length === 0 ||
+      !routeIntersectsObstacles(direct, obstacles)) {
+    return direct;
   }
 
-  return [
-    [ax, ay, az],
-    [bx, cornerY, az],
-    [bx, by, bz],
-  ];
+  const midY = (ay + by) / 2;
+  const candidates = [];
+
+  // 2. L-shape variant A: change X first, keep Z, then change Z
+  const lA = [[ax, ay, az], [bx, midY, az], [bx, by, bz]];
+  if (!routeIntersectsObstacles(lA, obstacles)) {
+    candidates.push(lA);
+  }
+
+  // 3. L-shape variant B: change Z first, keep X, then change X
+  const lB = [[ax, ay, az], [ax, midY, bz], [bx, by, bz]];
+  if (!routeIntersectsObstacles(lB, obstacles)) {
+    candidates.push(lB);
+  }
+
+  // Return shortest L-shape if any worked
+  if (candidates.length > 0) {
+    candidates.sort((a, b) => pathLength(a) - pathLength(b));
+    return candidates[0];
+  }
+
+  // 4. 3D detour routes – compute bounds of all obstacles to find clear offsets
+  const DETOUR_MARGIN = 4;
+  let obsMaxZ = -Infinity, obsMinZ = Infinity;
+  let obsMaxX = -Infinity, obsMinX = Infinity;
+  let obsMaxY = -Infinity;
+  for (const obs of obstacles) {
+    obsMaxZ = Math.max(obsMaxZ, obs.xMax !== undefined ? obs.zMax : obs.z + (obs.hd ?? obs.hh));
+    obsMinZ = Math.min(obsMinZ, obs.xMin !== undefined ? obs.zMin : obs.z - (obs.hd ?? obs.hh));
+    obsMaxX = Math.max(obsMaxX, obs.xMax ?? obs.x + obs.hw);
+    obsMinX = Math.min(obsMinX, obs.xMin ?? obs.x - obs.hw);
+    obsMaxY = Math.max(obsMaxY, obs.yMax ?? obs.y + obs.hh);
+  }
+
+  const detourRoutes = [];
+
+  // Detour via Z+ (front of scene)
+  const zF = Math.max(obsMaxZ, Math.max(az, bz)) + DETOUR_MARGIN;
+  detourRoutes.push([
+    [ax, ay, az], [ax, ay, zF], [bx, by, zF], [bx, by, bz],
+  ]);
+
+  // Detour via Z- (back of scene)
+  const zB = Math.min(obsMinZ, Math.min(az, bz)) - DETOUR_MARGIN;
+  detourRoutes.push([
+    [ax, ay, az], [ax, ay, zB], [bx, by, zB], [bx, by, bz],
+  ]);
+
+  // Detour via X+ (right)
+  const xR = Math.max(obsMaxX, Math.max(ax, bx)) + DETOUR_MARGIN;
+  detourRoutes.push([
+    [ax, ay, az], [xR, ay, az], [xR, by, bz], [bx, by, bz],
+  ]);
+
+  // Detour via X- (left)
+  const xL = Math.min(obsMinX, Math.min(ax, bx)) - DETOUR_MARGIN;
+  detourRoutes.push([
+    [ax, ay, az], [xL, ay, az], [xL, by, bz], [bx, by, bz],
+  ]);
+
+  // Detour via Y+ (above)
+  const yU = Math.max(obsMaxY, Math.max(ay, by)) + DETOUR_MARGIN;
+  detourRoutes.push([
+    [ax, ay, az], [ax, yU, az], [bx, yU, bz], [bx, by, bz],
+  ]);
+
+  // Filter to valid (non-intersecting) routes, sort by length
+  const valid = detourRoutes.filter(r => !routeIntersectsObstacles(r, obstacles));
+  if (valid.length > 0) {
+    valid.sort((a, b) => pathLength(a) - pathLength(b));
+    return valid[0];
+  }
+
+  // 5. Fallback: pick shortest detour even if it still clips (graceful degradation)
+  detourRoutes.sort((a, b) => pathLength(a) - pathLength(b));
+  return detourRoutes[0];
 }
 
 /* ─── scene builder ──────────────────────────────────────────────────── */
@@ -513,10 +643,23 @@ async function buildScene(designPath) {
   }
 
   // ── create connections (bundled cylinders) ──────────────────────
-  const obstacles = instances.map(inst => ({
-    x: inst.position.x, y: inst.position.y, z: inst.position.z,
-    hw: K.BASE_CUBE, hh: K.BASE_CUBE,
-  }));
+  // Build obstacles with actual scaled sizes + margin so routing avoids them
+  const ROUTE_MARGIN = 0.8;
+  const allObstacles = instances.map(inst => {
+    const mapped = instMap[inst.name];
+    const hw = ((mapped?.sx ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;
+    const hh = ((mapped?.sy ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;
+    const hd = ((mapped?.sz ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;
+    const px = inst.position.x, py = inst.position.y, pz = inst.position.z;
+    return {
+      name: inst.name,
+      x: px, y: py, z: pz,
+      hw, hh, hd,
+      xMin: px - hw, xMax: px + hw,
+      yMin: py - hh, yMax: py + hh,
+      zMin: pz - hd, zMax: pz + hd,
+    };
+  });
 
   for (const conn of connections) {
     const fromInst = instMap[conn.from?.instance];
@@ -526,7 +669,12 @@ async function buildScene(designPath) {
     const fp = fromInst.position;
     const tp = toInst.position;
 
-    // Route the connection
+    // Exclude the two connected instances from obstacles
+    const fromName = conn.from?.instance;
+    const toName = conn.to?.instance;
+    const obstacles = allObstacles.filter(o => o.name !== fromName && o.name !== toName);
+
+    // Route the connection using full 3D space
     const waypoints = routeConnection(
       fp.x, fp.y, fp.z,
       tp.x, tp.y, tp.z,
