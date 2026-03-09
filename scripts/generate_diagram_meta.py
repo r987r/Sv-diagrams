@@ -402,7 +402,7 @@ def build_vip_diagram(meta, design_name, description):
         groups.append({
             "name": f"{proto_upper} Master Agent",
             "instances": master_members,
-            "color": "#1565C0", "padding": 1.0,
+            "color": "#1565C0", "padding": 2.0, "depth": 2,
             "description": f"{proto_upper} master agent (sequencer, driver, monitor, coverage)",
         })
 
@@ -413,7 +413,7 @@ def build_vip_diagram(meta, design_name, description):
         groups.append({
             "name": f"{proto_upper} Slave Agent",
             "instances": slave_members,
-            "color": "#4A148C", "padding": 1.0,
+            "color": "#4A148C", "padding": 2.0, "depth": 2,
             "description": f"{proto_upper} slave agent (sequencer, driver, monitor, coverage)",
         })
 
@@ -424,7 +424,7 @@ def build_vip_diagram(meta, design_name, description):
     groups.append({
         "name": f"{proto_upper} Environment",
         "instances": env_members,
-        "color": "#1B5E20", "padding": 2.0,
+        "color": "#1B5E20", "padding": 3.5, "depth": 1,
         "description": f"{proto_upper} UVM environment with agents and scoreboard",
     })
 
@@ -432,7 +432,7 @@ def build_vip_diagram(meta, design_name, description):
     groups.append({
         "name": f"{proto_upper} Testbench",
         "instances": all_names,
-        "color": "#37474F", "padding": 3.0,
+        "color": "#37474F", "padding": 5.0, "depth": 0,
         "description": f"Top-level {proto_upper} UVC testbench (tb_top)",
     })
 
@@ -858,7 +858,7 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
         groups.append({
             "name": "AXI Master Interface",
             "instances": axim_names,
-            "color": "#0D47A1", "padding": 1.0,
+            "color": "#0D47A1", "padding": 2.0, "depth": 2,
             "description": "AXI master read/write data path",
         })
 
@@ -868,7 +868,7 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
         groups.append({
             "name": "DMA Channels",
             "instances": ch_names,
-            "color": "#4A148C", "padding": 1.0,
+            "color": "#4A148C", "padding": 2.0, "depth": 2,
             "description": "DMA channel logic and multiplexing",
         })
 
@@ -879,7 +879,7 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
         groups.append({
             "name": "Core Infrastructure",
             "instances": core_names,
-            "color": "#1B5E20", "padding": 1.5,
+            "color": "#1B5E20", "padding": 3.0, "depth": 1,
             "description": "Core modules: top, dual_core, registers",
         })
 
@@ -887,7 +887,7 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
     groups.append({
         "name": f"DMA AXI{data_width} Design",
         "instances": all_inst_names,
-        "color": "#37474F", "padding": 3.0,
+        "color": "#37474F", "padding": 5.0, "depth": 0,
         "description": f"DMA AXI {data_width}-bit top-level design",
     })
 

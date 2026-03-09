@@ -28,8 +28,10 @@ const K = {
   CAM_DIST: 1.6,           // camera distance multiplier
   HIT_RADIUS: 0.45,        // click hit-zone radius
   LOD_DIST: 120,            // label hide distance
-  COMP_OPACITY: 0.10,       // base opacity for composable blocks
-  COMP_EDGE_OPACITY: 0.45,  // wireframe edge opacity for composable blocks
+  COMP_OPACITY: 0.18,       // base opacity for composable blocks
+  COMP_EDGE_OPACITY: 0.60,  // wireframe edge opacity for composable blocks
+  COMP_DEPTH_INC: 0.05,     // opacity increase per nesting depth level
+  COMP_FLOOR_INSET: 0.01,   // floor plane inset from bottom of container
 };
 
 /* ─── renderer setup ─────────────────────────────────────────────────── */
@@ -132,15 +134,16 @@ function dashedBox(cx, cy, cz, w, h, d, color) {
 
 /**
  * Create a composable (solid semi-transparent) container block for groups and testbench.
- * These are the "box within box" hierarchy visuals.
+ * These are the "box within box" hierarchy visuals – clearly showing composition.
  */
 function composableBlock(cx, cy, cz, w, h, d, color, depth = 0) {
   const group = new THREE.Group();
 
-  // Opacity decreases with nesting depth (outermost most transparent)
-  const opacity = K.COMP_OPACITY + depth * 0.03;
+  // Inner (deeper) groups are slightly more opaque for visual clarity
+  const opacity = K.COMP_OPACITY + depth * K.COMP_DEPTH_INC;
+  const edgeOpacity = K.COMP_EDGE_OPACITY + depth * 0.04;
 
-  // Solid semi-transparent face
+  // Solid semi-transparent faces
   const faceGeo = new THREE.BoxGeometry(w, h, d);
   const faceMat = new THREE.MeshLambertMaterial({
     color, transparent: true, opacity,
@@ -150,10 +153,22 @@ function composableBlock(cx, cy, cz, w, h, d, color, depth = 0) {
   mesh.renderOrder = -10 + depth;  // outer first, inner later
   group.add(mesh);
 
-  // Wireframe edges
+  // Add a subtle opaque bottom face to ground the container visually
+  const floorGeo = new THREE.PlaneGeometry(w, d);
+  const floorMat = new THREE.MeshLambertMaterial({
+    color, transparent: true, opacity: opacity + 0.06,
+    side: THREE.DoubleSide, depthWrite: false,
+  });
+  const floor = new THREE.Mesh(floorGeo, floorMat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = -h / 2 + K.COMP_FLOOR_INSET;   // sit just inside the bottom
+  floor.renderOrder = mesh.renderOrder;
+  group.add(floor);
+
+  // Wireframe edges – thicker for outer, thinner for inner
   const edgeGeo = new THREE.EdgesGeometry(faceGeo);
   const edgeMat = new THREE.LineBasicMaterial({
-    color, transparent: true, opacity: K.COMP_EDGE_OPACITY,
+    color, transparent: true, opacity: edgeOpacity,
   });
   group.add(new THREE.LineSegments(edgeGeo, edgeMat));
 
@@ -412,10 +427,37 @@ async function buildScene(designPath) {
   }
 
   // ── create groups (composable blocks – nested solid enclosures) ───
-  // Sort by member count descending so outer groups render first for proper depth
+  // Sort by member count descending so outer groups render first for proper depth.
+  // Use explicit 'depth' field from metadata when available.
   const sortedGroups = [...groups].sort(
     (a, b) => (b.instances?.length ?? 0) - (a.instances?.length ?? 0)
   );
+
+  // Compute nesting depth for each group: groups that are subsets of
+  // larger groups get a higher depth value (= more nested / inner).
+  const groupDepths = new Map();
+  for (let gi = 0; gi < sortedGroups.length; gi++) {
+    const grp = sortedGroups[gi];
+    if (grp.depth !== undefined) {
+      groupDepths.set(gi, grp.depth);
+    } else {
+      // Count how many other groups fully contain this one
+      const mySet = new Set(grp.instances ?? []);
+      let nesting = 0;
+      for (const other of sortedGroups) {
+        if (other === grp) continue;
+        const otherSet = new Set(other.instances ?? []);
+        if (otherSet.size > mySet.size) {
+          let contained = true;
+          for (const m of mySet) {
+            if (!otherSet.has(m)) { contained = false; break; }
+          }
+          if (contained) nesting++;
+        }
+      }
+      groupDepths.set(gi, nesting);
+    }
+  }
 
   for (let gi = 0; gi < sortedGroups.length; gi++) {
     const grp = sortedGroups[gi];
@@ -425,7 +467,7 @@ async function buildScene(designPath) {
     if (grpInstances.length === 0) continue;
 
     // Compute bounds from member cubes (include their sizes)
-    const pad = grp.padding ?? 2;
+    const pad = grp.padding ?? 3;
     let xMin = Infinity, xMax = -Infinity;
     let yMin = Infinity, yMax = -Infinity;
     let zMin = Infinity, zMax = -Infinity;
@@ -450,10 +492,10 @@ async function buildScene(designPath) {
     const cz = (zMin + zMax) / 2;
     const w = xMax - xMin;
     const h = Math.max(yMax - yMin, K.MIN_GROUP_H);
-    const d = zMax - zMin;
+    const d = Math.max(zMax - zMin, K.MIN_GROUP_H);
 
-    // depth: outer groups (more members) get lower depth number
-    const depth = gi;
+    // Use computed nesting depth
+    const depth = groupDepths.get(gi) ?? gi;
     const grpColor = parseInt((grp.color ?? "#546E7A").replace("#", ""), 16);
     const { group: blockGroup, mesh: blockMesh } = composableBlock(cx, cy, cz, w, h, d, grpColor, depth);
     scene.add(blockGroup);
@@ -540,15 +582,22 @@ async function buildScene(designPath) {
     }
   }
 
-  // ── testbench enclosure (composable block – outermost container) ─
-  if (instances.length > 0) {
+  // ── testbench enclosure (only if no group already covers all instances) ─
+  const allInstNames = new Set(instances.map(i => i.name));
+  const hasFullGroup = groups.some(g => {
+    const gSet = new Set(g.instances ?? []);
+    return gSet.size >= allInstNames.size &&
+           [...allInstNames].every(n => gSet.has(n));
+  });
+
+  if (instances.length > 0 && !hasFullGroup) {
     const allBounds = computeBounds(instances, 8);
     const cx = (allBounds.xMin + allBounds.xMax) / 2;
     const cy = (allBounds.yMin + allBounds.yMax) / 2;
     const cz = (allBounds.zMin + allBounds.zMax) / 2;
     const w = allBounds.xMax - allBounds.xMin;
     const h = Math.max(allBounds.yMax - allBounds.yMin, 6);
-    const d = allBounds.zMax - allBounds.zMin;
+    const d = Math.max(allBounds.zMax - allBounds.zMin, K.MIN_GROUP_H);
 
     const { group: tbGroup } = composableBlock(cx, cy, cz, w, h, d, K.TB_COL, 0);
     scene.add(tbGroup);
