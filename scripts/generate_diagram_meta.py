@@ -34,6 +34,7 @@ RST_COLOR = "#FF5252"
 SIGNAL_COLOR = "#FFC107"
 TLM_COLOR = "#29B6F6"
 BUS_COLOR = "#FFC107"
+SUB_COMPONENT_SPACING = 8  # horizontal spacing between agent sub-components
 
 
 # ── helpers ───────────────────────────────────────────────────────────────
@@ -538,7 +539,7 @@ def _add_agent_instances(instances, agent_cls, side, protocol,
     n = len(active_roles)
     if n == 0:
         return
-    spacing = 8
+    spacing = SUB_COMPONENT_SPACING
     start_x = x_center - (n - 1) * spacing / 2
     for i, role in enumerate(active_roles):
         cls_list = agent_cls[role]

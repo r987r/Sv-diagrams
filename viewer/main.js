@@ -16,6 +16,7 @@ const K = {
   BASE_CUBE: 4,            // base cube side length (units)
   MIN_SCALE: 0.6,          // minimum cuboid scale factor
   MAX_SCALE: 2.2,          // maximum cuboid scale factor
+  MIN_GROUP_H: 2,          // minimum height for group enclosures
   CLK_COL: 0x00E676,
   RST_COL: 0xFF5252,
   SIG_COL: 0xFFC107,
@@ -411,7 +412,7 @@ async function buildScene(designPath) {
     const cy = (yMin + yMax) / 2;
     const cz = (zMin + zMax) / 2;
     const w = xMax - xMin;
-    const h = Math.max(yMax - yMin, 2);
+    const h = Math.max(yMax - yMin, K.MIN_GROUP_H);
     const d = zMax - zMin;
 
     const grpColor = parseInt((grp.color ?? "#546E7A").replace("#", ""), 16);
