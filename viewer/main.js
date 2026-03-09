@@ -26,7 +26,7 @@ const K = {
   BUNDLE_MAX_R: 0.6,       // max bundle cylinder radius
   CAM_DIST: 1.6,           // camera distance multiplier
   HIT_RADIUS: 0.45,        // click hit-zone radius
-  LOD_DIST: 60,            // label hide distance
+  LOD_DIST: 120,            // label hide distance
 };
 
 /* ─── renderer setup ─────────────────────────────────────────────────── */
@@ -50,7 +50,7 @@ scene.fog = new THREE.FogExp2(0x0d0d1a, 0.0025);
 const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 500);
 camera.position.set(0, 18, 40);
 
-const controls = new OrbitControls(camera, labelRenderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.autoRotate = false;

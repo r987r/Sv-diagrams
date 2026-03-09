@@ -219,7 +219,7 @@ def build_vip_diagram(meta, design_name, description):
         instances.append({
             "name": "tests",
             "module": "tests",
-            "position": {"x": 0, "y": 0, "z": -18},
+            "position": {"x": 0, "y": 0, "z": -30},
             "info": {
                 "class_count": len(test_classes),
                 "classes": [c["name"] for c in test_classes[:15]],
@@ -230,7 +230,7 @@ def build_vip_diagram(meta, design_name, description):
     instances.append({
         "name": "env",
         "module": "env",
-        "position": {"x": 0, "y": 0, "z": -8},
+        "position": {"x": 0, "y": 0, "z": -16},
         "info": {
             "class_count": len(env_classes),
             "classes": [c["name"] for c in env_classes],
@@ -243,7 +243,7 @@ def build_vip_diagram(meta, design_name, description):
         instances.append({
             "name": "sequences",
             "module": "sequences",
-            "position": {"x": -18, "y": 0, "z": 0},
+            "position": {"x": -28, "y": 0, "z": 0},
             "info": {
                 "class_count": len(seq_classes),
                 "classes": [c["name"] for c in seq_classes[:15]],
@@ -254,7 +254,7 @@ def build_vip_diagram(meta, design_name, description):
     instances.append({
         "name": "master_agent",
         "module": "master_agent",
-        "position": {"x": -8, "y": 0, "z": 2},
+        "position": {"x": -10, "y": 0, "z": 2},
         "info": {
             "class_count": len(agent_classes["master"]),
             "classes": [c["name"] for c in agent_classes["master"]],
@@ -266,7 +266,7 @@ def build_vip_diagram(meta, design_name, description):
     instances.append({
         "name": "slave_agent",
         "module": "slave_agent",
-        "position": {"x": 8, "y": 0, "z": 2},
+        "position": {"x": 10, "y": 0, "z": 2},
         "info": {
             "class_count": len(agent_classes["slave"]),
             "classes": [c["name"] for c in agent_classes["slave"]],
@@ -275,7 +275,7 @@ def build_vip_diagram(meta, design_name, description):
     })
 
     # Interfaces with signals
-    iface_x = -10
+    iface_x = -12
     for iface in ifaces:
         iface_name = iface.get("name", "")
         signals = iface.get("signals", [])
@@ -285,7 +285,7 @@ def build_vip_diagram(meta, design_name, description):
         instances.append({
             "name": iface_name,
             "module": mod_key,
-            "position": {"x": iface_x, "y": 0, "z": 14},
+            "position": {"x": iface_x, "y": 0, "z": 20},
             "info": {
                 "signal_count": len(signals),
                 "signals": [
@@ -295,7 +295,7 @@ def build_vip_diagram(meta, design_name, description):
                 "description": f"Interface: {iface_name}",
             },
         })
-        iface_x += 10
+        iface_x += 14
 
     # ── Build connections ─────────────────────────────────────────────
     # Tests → Environment

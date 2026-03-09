@@ -958,7 +958,7 @@
       "position": {
         "x": 0,
         "y": 0,
-        "z": -18
+        "z": -30
       },
       "info": {
         "class_count": 71,
@@ -987,7 +987,7 @@
       "position": {
         "x": 0,
         "y": 0,
-        "z": -8
+        "z": -16
       },
       "info": {
         "class_count": 4,
@@ -1004,7 +1004,7 @@
       "name": "sequences",
       "module": "sequences",
       "position": {
-        "x": -18,
+        "x": -28,
         "y": 0,
         "z": 0
       },
@@ -1033,7 +1033,7 @@
       "name": "master_agent",
       "module": "master_agent",
       "position": {
-        "x": -8,
+        "x": -10,
         "y": 0,
         "z": 2
       },
@@ -1058,7 +1058,7 @@
       "name": "slave_agent",
       "module": "slave_agent",
       "position": {
-        "x": 8,
+        "x": 10,
         "y": 0,
         "z": 2
       },
@@ -1084,9 +1084,9 @@
       "name": "axi4_if",
       "module": "iface_axi4_if",
       "position": {
-        "x": -10,
+        "x": -12,
         "y": 0,
-        "z": 14
+        "z": 20
       },
       "info": {
         "signal_count": 44,
