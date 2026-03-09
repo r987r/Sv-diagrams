@@ -31,6 +31,7 @@ const K = {
   COMP_OPACITY: 0.18,       // base opacity for composable blocks
   COMP_EDGE_OPACITY: 0.60,  // wireframe edge opacity for composable blocks
   COMP_DEPTH_INC: 0.05,     // opacity increase per nesting depth level
+  COMP_FLOOR_INSET: 0.01,   // floor plane inset from bottom of container
 };
 
 /* ─── renderer setup ─────────────────────────────────────────────────── */
@@ -160,7 +161,7 @@ function composableBlock(cx, cy, cz, w, h, d, color, depth = 0) {
   });
   const floor = new THREE.Mesh(floorGeo, floorMat);
   floor.rotation.x = -Math.PI / 2;
-  floor.position.y = -h / 2 + 0.01;   // sit just inside the bottom
+  floor.position.y = -h / 2 + K.COMP_FLOOR_INSET;   // sit just inside the bottom
   floor.renderOrder = mesh.renderOrder;
   group.add(floor);
 
@@ -168,7 +169,6 @@ function composableBlock(cx, cy, cz, w, h, d, color, depth = 0) {
   const edgeGeo = new THREE.EdgesGeometry(faceGeo);
   const edgeMat = new THREE.LineBasicMaterial({
     color, transparent: true, opacity: edgeOpacity,
-    linewidth: 1,
   });
   group.add(new THREE.LineSegments(edgeGeo, edgeMat));
 
