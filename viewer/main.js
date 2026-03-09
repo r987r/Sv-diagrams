@@ -526,8 +526,8 @@ async function buildScene(designPath) {
       objectMeta.set(hz, { type: "connection", data: conn });
     }
 
-    // Track cylinders for highlight
-    connCylinders.set(connKey, { cylinders: cyls, originalColor: color, conn });
+    // Track cylinders for highlight (store original opacity for restore)
+    connCylinders.set(connKey, { cylinders: cyls, originalColor: color, originalOpacity: 0.45, conn });
 
     // signal count label at midpoint
     if (numSigs > 1) {
@@ -675,7 +675,7 @@ function clearHighlight() {
   // Restore connection cylinder original appearance
   for (const [, entry] of connCylinders) {
     for (const cyl of entry.cylinders) {
-      cyl.material.opacity = 0.45;
+      cyl.material.opacity = entry.originalOpacity;
       cyl.material.emissive?.setHex(0x000000);
       cyl.material.emissiveIntensity = 0;
     }
@@ -721,7 +721,7 @@ function addConnectionHighlights(instName) {
       if (entry) {
         for (const cyl of entry.cylinders) {
           cyl.material.opacity = 0.9;
-          cyl.material.emissive = new THREE.Color(0xffffff);
+          cyl.material.emissive.setHex(0xffffff);
           cyl.material.emissiveIntensity = 0.3;
         }
       }
@@ -754,7 +754,7 @@ function highlightConnection(conn) {
   if (entry) {
     for (const cyl of entry.cylinders) {
       cyl.material.opacity = 0.95;
-      cyl.material.emissive = new THREE.Color(0xffffff);
+      cyl.material.emissive.setHex(0xffffff);
       cyl.material.emissiveIntensity = 0.4;
     }
   }
