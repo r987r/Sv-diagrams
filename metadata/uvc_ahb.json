@@ -746,7 +746,7 @@
       "module": "tests",
       "position": {
         "x": 0,
-        "y": 20,
+        "y": 24,
         "z": 0
       },
       "info": {
@@ -771,9 +771,9 @@
       "name": "sequences",
       "module": "sequences",
       "position": {
-        "x": -24,
-        "y": 14,
-        "z": 0
+        "x": 0,
+        "y": 12,
+        "z": -10
       },
       "info": {
         "class_count": 4,
@@ -790,8 +790,8 @@
       "module": "env",
       "position": {
         "x": 0,
-        "y": 8,
-        "z": 0
+        "y": 12,
+        "z": 10
       },
       "info": {
         "class_count": 4,
@@ -809,7 +809,7 @@
       "module": "master_agent",
       "position": {
         "x": -14,
-        "y": 0,
+        "y": 2,
         "z": 0
       },
       "info": {
@@ -824,9 +824,9 @@
       "name": "master_sequencer",
       "module": "master_sequencer",
       "position": {
-        "x": -26.0,
-        "y": -6,
-        "z": 0
+        "x": -19.0,
+        "y": -8,
+        "z": -5.0
       },
       "info": {
         "description": "ahb Master Sequencer",
@@ -840,9 +840,9 @@
       "name": "master_driver",
       "module": "master_driver",
       "position": {
-        "x": -18.0,
-        "y": -6,
-        "z": 0
+        "x": -9.0,
+        "y": -8,
+        "z": -5.0
       },
       "info": {
         "description": "ahb Master Driver",
@@ -856,9 +856,9 @@
       "name": "master_monitor",
       "module": "master_monitor",
       "position": {
-        "x": -10.0,
-        "y": -6,
-        "z": 0
+        "x": -19.0,
+        "y": -8,
+        "z": 5.0
       },
       "info": {
         "description": "ahb Master Monitor",
@@ -872,9 +872,9 @@
       "name": "master_coverage",
       "module": "master_coverage",
       "position": {
-        "x": -2.0,
-        "y": -6,
-        "z": 0
+        "x": -9.0,
+        "y": -8,
+        "z": 5.0
       },
       "info": {
         "description": "ahb Master Coverage",
@@ -889,7 +889,7 @@
       "module": "slave_agent",
       "position": {
         "x": 14,
-        "y": 0,
+        "y": 2,
         "z": 0
       },
       "info": {
@@ -904,9 +904,9 @@
       "name": "slave_sequencer",
       "module": "slave_sequencer",
       "position": {
-        "x": 2.0,
-        "y": -6,
-        "z": 0
+        "x": 9.0,
+        "y": -8,
+        "z": -5.0
       },
       "info": {
         "description": "ahb Slave Sequencer",
@@ -920,9 +920,9 @@
       "name": "slave_driver",
       "module": "slave_driver",
       "position": {
-        "x": 10.0,
-        "y": -6,
-        "z": 0
+        "x": 19.0,
+        "y": -8,
+        "z": -5.0
       },
       "info": {
         "description": "ahb Slave Driver",
@@ -936,9 +936,9 @@
       "name": "slave_monitor",
       "module": "slave_monitor",
       "position": {
-        "x": 18.0,
-        "y": -6,
-        "z": 0
+        "x": 9.0,
+        "y": -8,
+        "z": 5.0
       },
       "info": {
         "description": "ahb Slave Monitor",
@@ -952,9 +952,9 @@
       "name": "slave_coverage",
       "module": "slave_coverage",
       "position": {
-        "x": 26.0,
-        "y": -6,
-        "z": 0
+        "x": 19.0,
+        "y": -8,
+        "z": 5.0
       },
       "info": {
         "description": "ahb Slave Coverage",
@@ -968,8 +968,8 @@
       "name": "AhbInterface",
       "module": "iface_AhbInterface",
       "position": {
-        "x": -16,
-        "y": -14,
+        "x": 0.0,
+        "y": -20,
         "z": 0
       },
       "info": {
