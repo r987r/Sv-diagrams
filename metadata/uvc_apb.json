@@ -1220,8 +1220,9 @@
         "master_coverage"
       ],
       "color": "#1565C0",
-      "padding": 1.0,
-      "description": "APB master agent (sequencer, driver, monitor, coverage)"
+      "padding": 2.0,
+      "description": "APB master agent (sequencer, driver, monitor, coverage)",
+      "depth": 2
     },
     {
       "name": "APB Slave Agent",
@@ -1233,8 +1234,9 @@
         "slave_coverage"
       ],
       "color": "#4A148C",
-      "padding": 1.0,
-      "description": "APB slave agent (sequencer, driver, monitor, coverage)"
+      "padding": 2.0,
+      "description": "APB slave agent (sequencer, driver, monitor, coverage)",
+      "depth": 2
     },
     {
       "name": "APB Environment",
@@ -1253,8 +1255,9 @@
         "sequences"
       ],
       "color": "#1B5E20",
-      "padding": 2.0,
-      "description": "APB UVM environment with agents and scoreboard"
+      "padding": 3.5,
+      "description": "APB UVM environment with agents and scoreboard",
+      "depth": 1
     },
     {
       "name": "APB Testbench",
@@ -1275,8 +1278,9 @@
         "apb_if"
       ],
       "color": "#37474F",
-      "padding": 3.0,
-      "description": "Top-level APB UVC testbench (tb_top)"
+      "padding": 5.0,
+      "description": "Top-level APB UVC testbench (tb_top)",
+      "depth": 0
     }
   ]
 }

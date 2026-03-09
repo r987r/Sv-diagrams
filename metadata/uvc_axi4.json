@@ -2555,8 +2555,9 @@
         "master_coverage"
       ],
       "color": "#1565C0",
-      "padding": 1.0,
-      "description": "AXI4 master agent (sequencer, driver, monitor, coverage)"
+      "padding": 2.0,
+      "description": "AXI4 master agent (sequencer, driver, monitor, coverage)",
+      "depth": 2
     },
     {
       "name": "AXI4 Slave Agent",
@@ -2568,8 +2569,9 @@
         "slave_coverage"
       ],
       "color": "#4A148C",
-      "padding": 1.0,
-      "description": "AXI4 slave agent (sequencer, driver, monitor, coverage)"
+      "padding": 2.0,
+      "description": "AXI4 slave agent (sequencer, driver, monitor, coverage)",
+      "depth": 2
     },
     {
       "name": "AXI4 Environment",
@@ -2588,8 +2590,9 @@
         "sequences"
       ],
       "color": "#1B5E20",
-      "padding": 2.0,
-      "description": "AXI4 UVM environment with agents and scoreboard"
+      "padding": 3.5,
+      "description": "AXI4 UVM environment with agents and scoreboard",
+      "depth": 1
     },
     {
       "name": "AXI4 Testbench",
@@ -2610,8 +2613,9 @@
         "axi4_if"
       ],
       "color": "#37474F",
-      "padding": 3.0,
-      "description": "Top-level AXI4 UVC testbench (tb_top)"
+      "padding": 5.0,
+      "description": "Top-level AXI4 UVC testbench (tb_top)",
+      "depth": 0
     }
   ]
 }

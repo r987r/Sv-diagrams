@@ -10297,8 +10297,9 @@
         "axim_wr"
       ],
       "color": "#0D47A1",
-      "padding": 1.0,
-      "description": "AXI master read/write data path"
+      "padding": 2.0,
+      "description": "AXI master read/write data path",
+      "depth": 2
     },
     {
       "name": "DMA Channels",
@@ -10308,8 +10309,9 @@
         "channels_mux"
       ],
       "color": "#4A148C",
-      "padding": 1.0,
-      "description": "DMA channel logic and multiplexing"
+      "padding": 2.0,
+      "description": "DMA channel logic and multiplexing",
+      "depth": 2
     },
     {
       "name": "Core Infrastructure",
@@ -10320,8 +10322,9 @@
         "apb_mux"
       ],
       "color": "#1B5E20",
-      "padding": 1.5,
-      "description": "Core modules: top, dual_core, registers"
+      "padding": 3.0,
+      "description": "Core modules: top, dual_core, registers",
+      "depth": 1
     },
     {
       "name": "DMA AXI64 Design",
@@ -10347,8 +10350,9 @@
         "wdt"
       ],
       "color": "#37474F",
-      "padding": 3.0,
-      "description": "DMA AXI 64-bit top-level design"
+      "padding": 5.0,
+      "description": "DMA AXI 64-bit top-level design",
+      "depth": 0
     }
   ]
 }

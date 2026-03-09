@@ -1664,8 +1664,9 @@
         "master_coverage"
       ],
       "color": "#1565C0",
-      "padding": 1.0,
-      "description": "UART master agent (sequencer, driver, monitor, coverage)"
+      "padding": 2.0,
+      "description": "UART master agent (sequencer, driver, monitor, coverage)",
+      "depth": 2
     },
     {
       "name": "UART Slave Agent",
@@ -1677,8 +1678,9 @@
         "slave_coverage"
       ],
       "color": "#4A148C",
-      "padding": 1.0,
-      "description": "UART slave agent (sequencer, driver, monitor, coverage)"
+      "padding": 2.0,
+      "description": "UART slave agent (sequencer, driver, monitor, coverage)",
+      "depth": 2
     },
     {
       "name": "UART Environment",
@@ -1697,8 +1699,9 @@
         "sequences"
       ],
       "color": "#1B5E20",
-      "padding": 2.0,
-      "description": "UART UVM environment with agents and scoreboard"
+      "padding": 3.5,
+      "description": "UART UVM environment with agents and scoreboard",
+      "depth": 1
     },
     {
       "name": "UART Testbench",
@@ -1723,8 +1726,9 @@
         "UartRxMonitorBfm"
       ],
       "color": "#37474F",
-      "padding": 3.0,
-      "description": "Top-level UART UVC testbench (tb_top)"
+      "padding": 5.0,
+      "description": "Top-level UART UVC testbench (tb_top)",
+      "depth": 0
     }
   ]
 }
