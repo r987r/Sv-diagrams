@@ -411,8 +411,8 @@ function routeConnection(ax, ay, az, bx, by, bz, obstacles) {
   let obsMaxX = -Infinity, obsMinX = Infinity;
   let obsMaxY = -Infinity;
   for (const obs of obstacles) {
-    obsMaxZ = Math.max(obsMaxZ, obs.xMax !== undefined ? obs.zMax : obs.z + (obs.hd ?? obs.hh));
-    obsMinZ = Math.min(obsMinZ, obs.xMin !== undefined ? obs.zMin : obs.z - (obs.hd ?? obs.hh));
+    obsMaxZ = Math.max(obsMaxZ, obs.zMax ?? obs.z + obs.hd);
+    obsMinZ = Math.min(obsMinZ, obs.zMin ?? obs.z - obs.hd);
     obsMaxX = Math.max(obsMaxX, obs.xMax ?? obs.x + obs.hw);
     obsMinX = Math.min(obsMinX, obs.xMin ?? obs.x - obs.hw);
     obsMaxY = Math.max(obsMaxY, obs.yMax ?? obs.y + obs.hh);
@@ -647,9 +647,9 @@ async function buildScene(designPath) {
   const ROUTE_MARGIN = 0.8;
   const allObstacles = instances.map(inst => {
     const mapped = instMap[inst.name];
-    const hw = ((mapped?.sx ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;
-    const hh = ((mapped?.sy ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;
-    const hd = ((mapped?.sz ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;
+    const hw = ((mapped?.sx ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;  // half-width (X)
+    const hh = ((mapped?.sy ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;  // half-height (Y)
+    const hd = ((mapped?.sz ?? K.BASE_CUBE) / 2) + ROUTE_MARGIN;  // half-depth (Z)
     const px = inst.position.x, py = inst.position.y, pz = inst.position.z;
     return {
       name: inst.name,
