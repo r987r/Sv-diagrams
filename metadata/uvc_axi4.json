@@ -230,6 +230,42 @@
       "color": "#1565C0",
       "ports": [
         {
+          "name": "axi4_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_agent_config"
+        },
+        {
+          "name": "axi4_master_write_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_write_sequencer"
+        },
+        {
+          "name": "axi4_master_read_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_read_sequencer"
+        },
+        {
+          "name": "axi4_master_drv_proxy_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_driver_proxy"
+        },
+        {
+          "name": "axi4_master_mon_proxy_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_monitor_proxy"
+        },
+        {
+          "name": "axi4_master_cov_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_coverage"
+        },
+        {
           "name": "is_active",
           "direction": "InOut",
           "width": 1,
@@ -300,6 +336,112 @@
           "direction": "InOut",
           "width": 1,
           "type": "axi4_globals_pkg::qos_mode_e"
+        }
+      ],
+      "classes": [
+        "axi4_master_agent",
+        "axi4_master_agent_config"
+      ],
+      "class_count": 2
+    },
+    "master_sequencer": {
+      "description": "axi4 Master Sequencer",
+      "color": "#1976D2",
+      "ports": [
+        {
+          "name": "axi4_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_agent_config"
+        },
+        {
+          "name": "axi4_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_agent_config"
+        }
+      ],
+      "classes": [
+        "axi4_master_write_sequencer",
+        "axi4_master_read_sequencer"
+      ],
+      "class_count": 2
+    },
+    "master_driver": {
+      "description": "axi4 Master Driver",
+      "color": "#1E88E5",
+      "ports": [
+        {
+          "name": "axi_write_seq_item_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_seq_item_pull_port"
+        },
+        {
+          "name": "axi_read_seq_item_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_seq_item_pull_port"
+        },
+        {
+          "name": "axi_write_rsp_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi_read_rsp_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_master_write_resp_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_master_read_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "req_wr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "REQ"
+        },
+        {
+          "name": "req_rd",
+          "direction": "InOut",
+          "width": 1,
+          "type": "REQ"
+        },
+        {
+          "name": "completeSingleWrite",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "rsp_wr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "RSP"
+        },
+        {
+          "name": "rsp_rd",
+          "direction": "InOut",
+          "width": 1,
+          "type": "RSP"
         },
         {
           "name": "axi4_master_agent_cfg_h",
@@ -308,321 +450,754 @@
           "type": "axi4_master_agent_config"
         },
         {
-          "name": "awid",
+          "name": "axi4_master_drv_bfm_h",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::awid_e"
+          "type": "axi4_master_driver_bfm"
         },
         {
-          "name": "awaddr",
+          "name": "write_data_channel_key",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[31:0]"
+          "type": "semaphore"
         },
         {
-          "name": "awlen",
+          "name": "write_response_channel_key",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[7:0]"
+          "type": "semaphore"
         },
         {
-          "name": "awsize",
+          "name": "read_channel_key",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::awsize_e"
+          "type": "semaphore"
         },
         {
-          "name": "awburst",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::awburst_e"
-        },
-        {
-          "name": "awlock",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::awlock_e"
-        },
-        {
-          "name": "awcache",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::awcache_e"
-        },
-        {
-          "name": "awprot",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::awprot_e"
-        },
-        {
-          "name": "awqos",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[3:0]"
-        },
-        {
-          "name": "awregion",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[3:0]"
-        },
-        {
-          "name": "awuser",
+          "name": "wait_for_wr_addr",
           "direction": "InOut",
           "width": 1,
           "type": "bit"
         },
         {
-          "name": "wdata",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[63:0]$[$:256]"
-        },
-        {
-          "name": "wstrb",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[7:0]$[$:256]"
-        },
-        {
-          "name": "wlast",
+          "name": "qos_wait_enable",
           "direction": "InOut",
           "width": 1,
           "type": "bit"
         },
         {
-          "name": "wuser",
+          "name": "qos_wait_enable_for_b2b",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[3:0]"
+          "type": "bit"
         },
         {
-          "name": "bid",
+          "name": "address",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::bid_e"
+          "type": "int"
         },
         {
-          "name": "bresp",
+          "name": "length",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::bresp_e"
+          "type": "int"
+        },
+        {
+          "name": "size",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "queue_index",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "qualifer_for_initial_txn",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "one_time_check",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "disable_qos_check",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "enable_qos_check_for_initial_txn",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "qos_write_counter",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "qos_queue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx$[$]"
         }
       ],
       "classes": [
-        "axi4_master_agent_config",
-        "axi4_master_tx",
-        "axi4_master_seq_item_converter",
-        "axi4_master_cfg_converter",
-        "axi4_master_write_sequencer",
-        "axi4_master_read_sequencer",
-        "axi4_master_driver_proxy",
-        "axi4_master_monitor_proxy",
-        "axi4_master_coverage",
-        "axi4_master_agent"
+        "axi4_master_driver_proxy"
       ],
-      "class_count": 10
+      "class_count": 1
+    },
+    "master_monitor": {
+      "description": "axi4 Master Monitor",
+      "color": "#2196F3",
+      "ports": [
+        {
+          "name": "axi4_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_agent_config"
+        },
+        {
+          "name": "req_rd",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx"
+        },
+        {
+          "name": "req_wr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_tx"
+        },
+        {
+          "name": "axi4_master_mon_bfm_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_monitor_bfm"
+        },
+        {
+          "name": "axi4_master_read_address_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_read_data_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_address_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_data_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_response_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_address_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_master_write_data_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_master_read_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_master_read_address_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_read_data_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_address_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_data_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_response_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_master_write_address_fifo_h",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_master_write_data_fifo_h",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_master_read_fifo_h",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        }
+      ],
+      "classes": [
+        "axi4_master_monitor_proxy"
+      ],
+      "class_count": 1
+    },
+    "master_coverage": {
+      "description": "axi4 Master Coverage",
+      "color": "#42A5F5",
+      "ports": [
+        {
+          "name": "axi4_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_master_agent_config"
+        },
+        {
+          "name": "axi4_master_covergroup",
+          "direction": "InOut",
+          "width": 1,
+          "type": "<unnamed covergroup>"
+        }
+      ],
+      "classes": [
+        "axi4_master_coverage"
+      ],
+      "class_count": 1
     },
     "slave_agent": {
       "description": "axi4 Slave Agent",
       "color": "#4A148C",
       "ports": [
         {
-          "name": "slave_memory",
+          "name": "axi4_slave_agent_cfg_h",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[7:0]$[longint]"
+          "type": "axi4_slave_agent_config"
         },
         {
-          "name": "fifo_memory",
+          "name": "axi4_slave_write_seqr_h",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[7:0]$[$]"
+          "type": "axi4_slave_write_sequencer"
         },
         {
-          "name": "awaddr",
+          "name": "axi4_slave_read_seqr_h",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[31:0]"
+          "type": "axi4_slave_read_sequencer"
         },
         {
-          "name": "awid",
+          "name": "axi4_slave_drv_proxy_h",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::awid_e"
+          "type": "axi4_slave_driver_proxy"
         },
         {
-          "name": "awlen",
+          "name": "axi4_slave_mon_proxy_h",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[7:0]"
+          "type": "axi4_slave_monitor_proxy"
         },
         {
-          "name": "awsize",
+          "name": "axi4_slave_cov_h",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::awsize_e"
+          "type": "axi4_slave_coverage"
         },
         {
-          "name": "awburst",
+          "name": "is_active",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::awburst_e"
+          "type": "uvm_active_passive_enum"
         },
         {
-          "name": "awlock",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::awlock_e"
-        },
-        {
-          "name": "awcache",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::awcache_e"
-        },
-        {
-          "name": "awqos",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[3:0]"
-        },
-        {
-          "name": "awprot",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::awprot_e"
-        },
-        {
-          "name": "endian",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::endian_e"
-        },
-        {
-          "name": "wdata",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[63:0]$[$:256]"
-        },
-        {
-          "name": "wstrb",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[7:0]$[$:256]"
-        },
-        {
-          "name": "wlast",
+          "name": "has_coverage",
           "direction": "InOut",
           "width": 1,
           "type": "bit"
         },
         {
-          "name": "wuser",
+          "name": "slave_id",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[3:0]"
+          "type": "int"
         },
         {
-          "name": "bid",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::bid_e"
-        },
-        {
-          "name": "bresp",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::bresp_e"
-        },
-        {
-          "name": "buser",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[3:0]"
-        },
-        {
-          "name": "arid",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::arid_e"
-        },
-        {
-          "name": "araddr",
+          "name": "max_address",
           "direction": "InOut",
           "width": 1,
           "type": "bit[31:0]"
         },
         {
-          "name": "arlen",
+          "name": "min_address",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[7:0]"
+          "type": "bit[31:0]"
         },
         {
-          "name": "arsize",
+          "name": "wait_count_write_response_channel",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::arsize_e"
+          "type": "int"
         },
         {
-          "name": "arburst",
+          "name": "wait_count_read_data_channel",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::arburst_e"
+          "type": "int"
         },
         {
-          "name": "arlock",
+          "name": "slave_response_mode",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::arlock_e"
+          "type": "axi4_globals_pkg::response_mode_e"
         },
         {
-          "name": "arcache",
+          "name": "minimum_transactions",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::arcache_e"
+          "type": "bit[1:0]"
         },
         {
-          "name": "arprot",
-          "direction": "InOut",
-          "width": 1,
-          "type": "axi4_globals_pkg::arprot_e"
-        },
-        {
-          "name": "arregion",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit"
-        },
-        {
-          "name": "arqos",
+          "name": "maximum_transactions",
           "direction": "InOut",
           "width": 1,
           "type": "bit[3:0]"
         },
         {
-          "name": "rid",
+          "name": "read_data_mode",
           "direction": "InOut",
           "width": 1,
-          "type": "axi4_globals_pkg::rid_e"
+          "type": "axi4_globals_pkg::read_data_type_mode_e"
+        },
+        {
+          "name": "qos_mode_type",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_globals_pkg::qos_mode_e"
+        },
+        {
+          "name": "user_rdata",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[63:0]"
         }
       ],
       "classes": [
-        "axi4_slave_memory",
-        "axi4_slave_tx",
-        "axi4_slave_agent_config",
-        "axi4_slave_seq_item_converter",
-        "axi4_slave_cfg_converter",
-        "axi4_slave_coverage",
-        "axi4_slave_write_sequencer",
-        "axi4_slave_read_sequencer",
-        "axi4_slave_driver_proxy",
-        "axi4_slave_monitor_proxy",
-        "axi4_slave_agent"
+        "axi4_slave_agent",
+        "axi4_slave_agent_config"
       ],
-      "class_count": 11
+      "class_count": 2
+    },
+    "slave_sequencer": {
+      "description": "axi4 Slave Sequencer",
+      "color": "#6A1B9A",
+      "ports": [
+        {
+          "name": "axi4_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_agent_config"
+        },
+        {
+          "name": "axi4_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_agent_config"
+        }
+      ],
+      "classes": [
+        "axi4_slave_write_sequencer",
+        "axi4_slave_read_sequencer"
+      ],
+      "class_count": 2
+    },
+    "slave_driver": {
+      "description": "axi4 Slave Driver",
+      "color": "#7B1FA2",
+      "ports": [
+        {
+          "name": "axi_write_seq_item_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_seq_item_pull_port"
+        },
+        {
+          "name": "axi_read_seq_item_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_seq_item_pull_port"
+        },
+        {
+          "name": "axi_write_rsp_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi_read_rsp_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "req_wr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "REQ"
+        },
+        {
+          "name": "req_rd",
+          "direction": "InOut",
+          "width": 1,
+          "type": "REQ"
+        },
+        {
+          "name": "rsp_wr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "RSP"
+        },
+        {
+          "name": "rsp_rd",
+          "direction": "InOut",
+          "width": 1,
+          "type": "RSP"
+        },
+        {
+          "name": "axi4_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_agent_config"
+        },
+        {
+          "name": "axi4_slave_mem_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_memory"
+        },
+        {
+          "name": "axi4_slave_drv_bfm_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_driver_bfm"
+        },
+        {
+          "name": "axi4_slave_write_addr_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_fifo"
+        },
+        {
+          "name": "axi4_slave_write_data_in_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_fifo"
+        },
+        {
+          "name": "axi4_slave_write_response_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_fifo"
+        },
+        {
+          "name": "axi4_slave_write_data_out_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_fifo"
+        },
+        {
+          "name": "axi4_slave_read_addr_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_fifo"
+        },
+        {
+          "name": "axi4_slave_read_data_in_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_fifo"
+        },
+        {
+          "name": "axiSlaveAddressQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx$[$]"
+        },
+        {
+          "name": "axiSlaveDataQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx$[$]"
+        },
+        {
+          "name": "axiSlaveIdQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int$[$]"
+        },
+        {
+          "name": "axiSlaveIdDynamicArray",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int$[]"
+        },
+        {
+          "name": "indexTracker",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int$[$]"
+        },
+        {
+          "name": "numberOfDataTransaction",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        },
+        {
+          "name": "flag",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit"
+        },
+        {
+          "name": "axiReadSlaveAddressQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx$[$]"
+        },
+        {
+          "name": "axiReadSlaveDatatQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx$[$]"
+        },
+        {
+          "name": "axiReadSlaveIdQueue",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int$[$]"
+        },
+        {
+          "name": "axiReadSlaveIdDynamicArray",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int$[]"
+        },
+        {
+          "name": "readIndexTracker",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int$[$]"
+        },
+        {
+          "name": "readFlag",
+          "direction": "InOut",
+          "width": 1,
+          "type": "int"
+        }
+      ],
+      "classes": [
+        "axi4_slave_driver_proxy"
+      ],
+      "class_count": 1
+    },
+    "slave_monitor": {
+      "description": "axi4 Slave Monitor",
+      "color": "#8E24AA",
+      "ports": [
+        {
+          "name": "axi4_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_agent_config"
+        },
+        {
+          "name": "axi4_slave_mon_bfm_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_monitor_bfm"
+        },
+        {
+          "name": "req_rd",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx"
+        },
+        {
+          "name": "req_wr",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_tx"
+        },
+        {
+          "name": "axi4_slave_write_address_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_write_data_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_write_response_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_read_address_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_read_data_analysis_port",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_write_address_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_slave_write_data_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_slave_read_fifo_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_slave_write_address_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_write_data_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_write_response_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_read_address_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_read_data_analysis_port",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "axi4_slave_write_address_fifo_h",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_slave_write_data_fifo_h",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        },
+        {
+          "name": "axi4_slave_read_fifo_h",
+          "direction": "In",
+          "width": 1,
+          "type": "uvm_tlm_analysis_fifo"
+        }
+      ],
+      "classes": [
+        "axi4_slave_monitor_proxy"
+      ],
+      "class_count": 1
+    },
+    "slave_coverage": {
+      "description": "axi4 Slave Coverage",
+      "color": "#AB47BC",
+      "ports": [
+        {
+          "name": "axi4_slave_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "axi4_slave_agent_config"
+        },
+        {
+          "name": "axi4_slave_covergroup",
+          "direction": "InOut",
+          "width": 1,
+          "type": "<unnamed covergroup>"
+        }
+      ],
+      "classes": [
+        "axi4_slave_coverage"
+      ],
+      "class_count": 1
     },
     "iface_axi4_if": {
       "description": "Interface: axi4_if",
@@ -957,8 +1532,8 @@
       "module": "tests",
       "position": {
         "x": 0,
-        "y": 0,
-        "z": -30
+        "y": 20,
+        "z": 0
       },
       "info": {
         "class_count": 71,
@@ -982,30 +1557,11 @@
       }
     },
     {
-      "name": "env",
-      "module": "env",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": -16
-      },
-      "info": {
-        "class_count": 4,
-        "classes": [
-          "axi4_env_config",
-          "axi4_virtual_sequencer",
-          "axi4_scoreboard",
-          "axi4_env"
-        ],
-        "description": "axi4 UVM Environment"
-      }
-    },
-    {
       "name": "sequences",
       "module": "sequences",
       "position": {
-        "x": -28,
-        "y": 0,
+        "x": -24,
+        "y": 14,
         "z": 0
       },
       "info": {
@@ -1030,63 +1586,193 @@
       }
     },
     {
+      "name": "env",
+      "module": "env",
+      "position": {
+        "x": 0,
+        "y": 8,
+        "z": 0
+      },
+      "info": {
+        "class_count": 4,
+        "classes": [
+          "axi4_env_config",
+          "axi4_virtual_sequencer",
+          "axi4_scoreboard",
+          "axi4_env"
+        ],
+        "description": "axi4 UVM Environment"
+      }
+    },
+    {
       "name": "master_agent",
       "module": "master_agent",
       "position": {
-        "x": -10,
+        "x": -14,
         "y": 0,
-        "z": 2
+        "z": 0
       },
       "info": {
+        "description": "axi4 Master Agent",
         "class_count": 10,
         "classes": [
-          "axi4_master_agent_config",
-          "axi4_master_tx",
-          "axi4_master_seq_item_converter",
-          "axi4_master_cfg_converter",
-          "axi4_master_write_sequencer",
-          "axi4_master_read_sequencer",
-          "axi4_master_driver_proxy",
-          "axi4_master_monitor_proxy",
-          "axi4_master_coverage",
           "axi4_master_agent"
-        ],
-        "description": "axi4 Master Agent"
+        ]
+      }
+    },
+    {
+      "name": "master_sequencer",
+      "module": "master_sequencer",
+      "position": {
+        "x": -26.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "axi4 Master Sequencer",
+        "class_count": 2,
+        "classes": [
+          "axi4_master_write_sequencer",
+          "axi4_master_read_sequencer"
+        ]
+      }
+    },
+    {
+      "name": "master_driver",
+      "module": "master_driver",
+      "position": {
+        "x": -18.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "axi4 Master Driver",
+        "class_count": 1,
+        "classes": [
+          "axi4_master_driver_proxy"
+        ]
+      }
+    },
+    {
+      "name": "master_monitor",
+      "module": "master_monitor",
+      "position": {
+        "x": -10.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "axi4 Master Monitor",
+        "class_count": 1,
+        "classes": [
+          "axi4_master_monitor_proxy"
+        ]
+      }
+    },
+    {
+      "name": "master_coverage",
+      "module": "master_coverage",
+      "position": {
+        "x": -2.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "axi4 Master Coverage",
+        "class_count": 1,
+        "classes": [
+          "axi4_master_coverage"
+        ]
       }
     },
     {
       "name": "slave_agent",
       "module": "slave_agent",
       "position": {
-        "x": 10,
+        "x": 14,
         "y": 0,
-        "z": 2
+        "z": 0
       },
       "info": {
+        "description": "axi4 Slave Agent",
         "class_count": 11,
         "classes": [
-          "axi4_slave_memory",
-          "axi4_slave_tx",
-          "axi4_slave_agent_config",
-          "axi4_slave_seq_item_converter",
-          "axi4_slave_cfg_converter",
-          "axi4_slave_coverage",
-          "axi4_slave_write_sequencer",
-          "axi4_slave_read_sequencer",
-          "axi4_slave_driver_proxy",
-          "axi4_slave_monitor_proxy",
           "axi4_slave_agent"
-        ],
-        "description": "axi4 Slave Agent"
+        ]
+      }
+    },
+    {
+      "name": "slave_sequencer",
+      "module": "slave_sequencer",
+      "position": {
+        "x": 2.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "axi4 Slave Sequencer",
+        "class_count": 2,
+        "classes": [
+          "axi4_slave_write_sequencer",
+          "axi4_slave_read_sequencer"
+        ]
+      }
+    },
+    {
+      "name": "slave_driver",
+      "module": "slave_driver",
+      "position": {
+        "x": 10.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "axi4 Slave Driver",
+        "class_count": 1,
+        "classes": [
+          "axi4_slave_driver_proxy"
+        ]
+      }
+    },
+    {
+      "name": "slave_monitor",
+      "module": "slave_monitor",
+      "position": {
+        "x": 18.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "axi4 Slave Monitor",
+        "class_count": 1,
+        "classes": [
+          "axi4_slave_monitor_proxy"
+        ]
+      }
+    },
+    {
+      "name": "slave_coverage",
+      "module": "slave_coverage",
+      "position": {
+        "x": 26.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "axi4 Slave Coverage",
+        "class_count": 1,
+        "classes": [
+          "axi4_slave_coverage"
+        ]
       }
     },
     {
       "name": "axi4_if",
       "module": "iface_axi4_if",
       "position": {
-        "x": -12,
-        "y": 0,
-        "z": 20
+        "x": -16,
+        "y": -14,
+        "z": 0
       },
       "info": {
         "signal_count": 44,
@@ -1295,8 +1981,8 @@
     },
     {
       "id": "env_to_master",
-      "type": "tlm",
-      "color": "#29B6F6",
+      "type": "hierarchy",
+      "color": "#CE93D8",
       "from": {
         "instance": "env",
         "port": "master_agent"
@@ -1315,8 +2001,8 @@
     },
     {
       "id": "env_to_slave",
-      "type": "tlm",
-      "color": "#29B6F6",
+      "type": "hierarchy",
+      "color": "#CE93D8",
       "from": {
         "instance": "env",
         "port": "slave_agent"
@@ -1334,16 +2020,16 @@
       "description": "Environment instantiates slave agent"
     },
     {
-      "id": "seq_to_master",
+      "id": "seq_to_master_sqr",
       "type": "tlm",
-      "color": "#FFC107",
+      "color": "#29B6F6",
       "from": {
         "instance": "sequences",
         "port": "seq_item_port"
       },
       "to": {
-        "instance": "master_agent",
-        "port": "sequencer"
+        "instance": "master_sequencer",
+        "port": "seq_item_export"
       },
       "signals": [
         {
@@ -1354,11 +2040,131 @@
       "description": "Sequences drive transactions via sequencer"
     },
     {
-      "id": "master_to_axi4_if",
+      "id": "master_sqr_to_drv",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_sequencer",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "master_driver",
+        "port": "seq_item_export"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "master sequencer \u2192 driver (TLM)"
+    },
+    {
+      "id": "master_mon_to_env",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_monitor",
+        "port": "analysis_port"
+      },
+      "to": {
+        "instance": "env",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "analysis_port",
+          "width": 1
+        }
+      ],
+      "description": "master monitor \u2192 scoreboard (TLM)"
+    },
+    {
+      "id": "master_mon_to_cov",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_monitor",
+        "port": "cov_port"
+      },
+      "to": {
+        "instance": "master_coverage",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "coverage_port",
+          "width": 1
+        }
+      ],
+      "description": "master monitor \u2192 coverage (TLM)"
+    },
+    {
+      "id": "slave_sqr_to_drv",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_sequencer",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "slave_driver",
+        "port": "seq_item_export"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "slave sequencer \u2192 driver (TLM)"
+    },
+    {
+      "id": "slave_mon_to_env",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_monitor",
+        "port": "analysis_port"
+      },
+      "to": {
+        "instance": "env",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "analysis_port",
+          "width": 1
+        }
+      ],
+      "description": "slave monitor \u2192 scoreboard (TLM)"
+    },
+    {
+      "id": "slave_mon_to_cov",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_monitor",
+        "port": "cov_port"
+      },
+      "to": {
+        "instance": "slave_coverage",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "coverage_port",
+          "width": 1
+        }
+      ],
+      "description": "slave monitor \u2192 coverage (TLM)"
+    },
+    {
+      "id": "master_driver_to_axi4_if",
       "type": "signal",
       "color": "#FFC107",
       "from": {
-        "instance": "master_agent",
+        "instance": "master_driver",
         "port": "vif"
       },
       "to": {
@@ -1543,10 +2349,10 @@
           "width": 1
         }
       ],
-      "description": "Master \u2194 axi4_if (44 signals)"
+      "description": "master_driver \u2194 axi4_if (44 signals)"
     },
     {
-      "id": "axi4_if_to_slave",
+      "id": "axi4_if_to_slave_driver",
       "type": "signal",
       "color": "#FFC107",
       "from": {
@@ -1554,7 +2360,7 @@
         "port": "slave_side"
       },
       "to": {
-        "instance": "slave_agent",
+        "instance": "slave_driver",
         "port": "vif"
       },
       "signals": [
@@ -1735,33 +2541,77 @@
           "width": 1
         }
       ],
-      "description": "axi4_if \u2194 Slave (44 signals)"
+      "description": "axi4_if \u2194 slave_driver (44 signals)"
     }
   ],
   "groups": [
     {
-      "name": "AXI4 Testbench",
+      "name": "AXI4 Master Agent",
       "instances": [
-        "tests",
-        "env",
-        "sequences",
         "master_agent",
-        "slave_agent",
-        "axi4_if"
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage"
       ],
-      "color": "#37474F",
-      "description": "Top-level AXI4 UVC testbench"
+      "color": "#1565C0",
+      "padding": 1.0,
+      "description": "AXI4 master agent (sequencer, driver, monitor, coverage)"
+    },
+    {
+      "name": "AXI4 Slave Agent",
+      "instances": [
+        "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage"
+      ],
+      "color": "#4A148C",
+      "padding": 1.0,
+      "description": "AXI4 slave agent (sequencer, driver, monitor, coverage)"
     },
     {
       "name": "AXI4 Environment",
       "instances": [
         "env",
         "master_agent",
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage",
         "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage",
         "sequences"
       ],
       "color": "#1B5E20",
-      "description": "AXI4 UVM environment with agents"
+      "padding": 2.0,
+      "description": "AXI4 UVM environment with agents and scoreboard"
+    },
+    {
+      "name": "AXI4 Testbench",
+      "instances": [
+        "tests",
+        "sequences",
+        "env",
+        "master_agent",
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage",
+        "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage",
+        "axi4_if"
+      ],
+      "color": "#37474F",
+      "padding": 3.0,
+      "description": "Top-level AXI4 UVC testbench (tb_top)"
     }
   ]
 }

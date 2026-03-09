@@ -230,6 +230,42 @@
       "color": "#1565C0",
       "ports": [
         {
+          "name": "apb_master_agent_cfg_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_agent_config"
+        },
+        {
+          "name": "apb_master_seqr_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_sequencer"
+        },
+        {
+          "name": "apb_master_drv_proxy_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_driver_proxy"
+        },
+        {
+          "name": "apb_master_mon_proxy_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_monitor_proxy"
+        },
+        {
+          "name": "apb_master_cov_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_coverage"
+        },
+        {
+          "name": "apb_reg_adapter_h",
+          "direction": "InOut",
+          "width": 1,
+          "type": "apb_master_adapter"
+        },
+        {
           "name": "is_active",
           "direction": "InOut",
           "width": 1,
@@ -270,91 +306,34 @@
           "direction": "InOut",
           "width": 1,
           "type": "bit[31:0]$[int]"
-        },
-        {
-          "name": "paddr",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[31:0]"
-        },
-        {
-          "name": "pprot",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_global_pkg::protection_type_e"
-        },
-        {
-          "name": "pselx",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_global_pkg::slave_no_e"
-        },
-        {
-          "name": "pwrite",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_global_pkg::tx_type_e"
-        },
-        {
-          "name": "transfer_size",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_global_pkg::transfer_size_e"
-        },
-        {
-          "name": "pwdata",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[31:0]"
-        },
-        {
-          "name": "pstrb",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[3:0]"
-        },
-        {
-          "name": "prdata",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[31:0]"
-        },
-        {
-          "name": "pslverr",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_global_pkg::slave_error_e"
-        },
+        }
+      ],
+      "classes": [
+        "apb_master_agent",
+        "apb_master_agent_config"
+      ],
+      "class_count": 2
+    },
+    "master_sequencer": {
+      "description": "apb Master Sequencer",
+      "color": "#1976D2",
+      "ports": [
         {
           "name": "apb_master_agent_cfg_h",
           "direction": "InOut",
           "width": 1,
           "type": "apb_master_agent_config"
-        },
-        {
-          "name": "no_of_wait_states_detected",
-          "direction": "InOut",
-          "width": 1,
-          "type": "int"
-        },
-        {
-          "name": "cont_write_read",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit"
-        },
-        {
-          "name": "address",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[31:0]"
-        },
-        {
-          "name": "apb_master_agent_cfg_h",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_master_agent_config"
-        },
+        }
+      ],
+      "classes": [
+        "apb_master_sequencer"
+      ],
+      "class_count": 1
+    },
+    "master_driver": {
+      "description": "apb Master Driver",
+      "color": "#1E88E5",
+      "ports": [
         {
           "name": "apb_master_tx_h",
           "direction": "InOut",
@@ -372,7 +351,17 @@
           "direction": "InOut",
           "width": 1,
           "type": "apb_master_agent_config"
-        },
+        }
+      ],
+      "classes": [
+        "apb_master_driver_proxy"
+      ],
+      "class_count": 1
+    },
+    "master_monitor": {
+      "description": "apb Master Monitor",
+      "color": "#2196F3",
+      "ports": [
         {
           "name": "apb_master_mon_bfm_h",
           "direction": "InOut",
@@ -396,7 +385,17 @@
           "direction": "Out",
           "width": 1,
           "type": "uvm_analysis_port"
-        },
+        }
+      ],
+      "classes": [
+        "apb_master_monitor_proxy"
+      ],
+      "class_count": 1
+    },
+    "master_coverage": {
+      "description": "apb Master Coverage",
+      "color": "#42A5F5",
+      "ports": [
         {
           "name": "apb_master_agent_cfg_h",
           "direction": "InOut",
@@ -411,88 +410,43 @@
         }
       ],
       "classes": [
-        "apb_master_agent_config",
-        "apb_master_tx",
-        "apb_master_seq_item_converter",
-        "apb_master_cfg_converter",
-        "apb_master_adapter",
-        "apb_master_sequencer",
-        "apb_master_driver_proxy",
-        "apb_master_monitor_proxy",
-        "apb_master_coverage",
-        "apb_master_agent"
+        "apb_master_coverage"
       ],
-      "class_count": 10
+      "class_count": 1
     },
     "slave_agent": {
       "description": "apb Slave Agent",
       "color": "#4A148C",
       "ports": [
         {
-          "name": "psel",
+          "name": "apb_slave_agent_cfg_h",
           "direction": "InOut",
           "width": 1,
-          "type": "bit"
+          "type": "apb_slave_agent_config"
         },
         {
-          "name": "paddr",
+          "name": "apb_slave_seqr_h",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[31:0]"
+          "type": "apb_slave_sequencer"
         },
         {
-          "name": "pwrite",
+          "name": "apb_slave_drv_proxy_h",
           "direction": "InOut",
           "width": 1,
-          "type": "apb_global_pkg::tx_type_e"
+          "type": "apb_slave_driver_proxy"
         },
         {
-          "name": "pwdata",
+          "name": "apb_slave_mon_proxy_h",
           "direction": "InOut",
           "width": 1,
-          "type": "bit[31:0]"
+          "type": "apb_slave_monitor_proxy"
         },
         {
-          "name": "pslverr",
+          "name": "apb_slave_cov_h",
           "direction": "InOut",
           "width": 1,
-          "type": "apb_global_pkg::slave_error_e"
-        },
-        {
-          "name": "pready",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit"
-        },
-        {
-          "name": "prdata",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[31:0]"
-        },
-        {
-          "name": "pprot",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_global_pkg::protection_type_e"
-        },
-        {
-          "name": "no_of_wait_states",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit[2:0]"
-        },
-        {
-          "name": "choose_packet_data",
-          "direction": "InOut",
-          "width": 1,
-          "type": "bit"
-        },
-        {
-          "name": "transfer_size",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_global_pkg::transfer_size_e"
+          "type": "apb_slave_coverage"
         },
         {
           "name": "is_active",
@@ -541,13 +495,34 @@
           "direction": "InOut",
           "width": 1,
           "type": "bit[31:0]"
-        },
+        }
+      ],
+      "classes": [
+        "apb_slave_agent",
+        "apb_slave_agent_config"
+      ],
+      "class_count": 2
+    },
+    "slave_sequencer": {
+      "description": "apb Slave Sequencer",
+      "color": "#6A1B9A",
+      "ports": [
         {
           "name": "apb_slave_agent_cfg_h",
           "direction": "InOut",
           "width": 1,
           "type": "apb_slave_agent_config"
-        },
+        }
+      ],
+      "classes": [
+        "apb_slave_sequencer"
+      ],
+      "class_count": 1
+    },
+    "slave_driver": {
+      "description": "apb Slave Driver",
+      "color": "#7B1FA2",
+      "ports": [
         {
           "name": "apb_slave_tx_h",
           "direction": "InOut",
@@ -565,7 +540,17 @@
           "direction": "InOut",
           "width": 1,
           "type": "apb_slave_agent_config"
-        },
+        }
+      ],
+      "classes": [
+        "apb_slave_driver_proxy"
+      ],
+      "class_count": 1
+    },
+    "slave_monitor": {
+      "description": "apb Slave Monitor",
+      "color": "#8E24AA",
+      "ports": [
         {
           "name": "apb_slave_analysis_port",
           "direction": "InOut",
@@ -589,7 +574,17 @@
           "direction": "Out",
           "width": 1,
           "type": "uvm_analysis_port"
-        },
+        }
+      ],
+      "classes": [
+        "apb_slave_monitor_proxy"
+      ],
+      "class_count": 1
+    },
+    "slave_coverage": {
+      "description": "apb Slave Coverage",
+      "color": "#AB47BC",
+      "ports": [
         {
           "name": "apb_slave_agent_cfg_h",
           "direction": "InOut",
@@ -601,26 +596,12 @@
           "direction": "InOut",
           "width": 1,
           "type": "<unnamed covergroup>"
-        },
-        {
-          "name": "apb_slave_agent_cfg_h",
-          "direction": "InOut",
-          "width": 1,
-          "type": "apb_slave_agent_config"
         }
       ],
       "classes": [
-        "apb_slave_tx",
-        "apb_slave_agent_config",
-        "apb_slave_seq_item_converter",
-        "apb_slave_cfg_converter",
-        "apb_slave_sequencer",
-        "apb_slave_driver_proxy",
-        "apb_slave_monitor_proxy",
-        "apb_slave_coverage",
-        "apb_slave_agent"
+        "apb_slave_coverage"
       ],
-      "class_count": 9
+      "class_count": 1
     },
     "iface_apb_if": {
       "description": "Interface: apb_if",
@@ -704,8 +685,8 @@
       "module": "tests",
       "position": {
         "x": 0,
-        "y": 0,
-        "z": -30
+        "y": 20,
+        "z": 0
       },
       "info": {
         "class_count": 9,
@@ -723,30 +704,11 @@
       }
     },
     {
-      "name": "env",
-      "module": "env",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": -16
-      },
-      "info": {
-        "class_count": 4,
-        "classes": [
-          "apb_env_config",
-          "apb_virtual_sequencer",
-          "apb_scoreboard",
-          "apb_env"
-        ],
-        "description": "apb UVM Environment"
-      }
-    },
-    {
       "name": "sequences",
       "module": "sequences",
       "position": {
-        "x": -28,
-        "y": 0,
+        "x": -24,
+        "y": 14,
         "z": 0
       },
       "info": {
@@ -771,61 +733,191 @@
       }
     },
     {
+      "name": "env",
+      "module": "env",
+      "position": {
+        "x": 0,
+        "y": 8,
+        "z": 0
+      },
+      "info": {
+        "class_count": 4,
+        "classes": [
+          "apb_env_config",
+          "apb_virtual_sequencer",
+          "apb_scoreboard",
+          "apb_env"
+        ],
+        "description": "apb UVM Environment"
+      }
+    },
+    {
       "name": "master_agent",
       "module": "master_agent",
       "position": {
-        "x": -10,
+        "x": -14,
         "y": 0,
-        "z": 2
+        "z": 0
       },
       "info": {
+        "description": "apb Master Agent",
         "class_count": 10,
         "classes": [
-          "apb_master_agent_config",
-          "apb_master_tx",
-          "apb_master_seq_item_converter",
-          "apb_master_cfg_converter",
-          "apb_master_adapter",
-          "apb_master_sequencer",
-          "apb_master_driver_proxy",
-          "apb_master_monitor_proxy",
-          "apb_master_coverage",
           "apb_master_agent"
-        ],
-        "description": "apb Master Agent"
+        ]
+      }
+    },
+    {
+      "name": "master_sequencer",
+      "module": "master_sequencer",
+      "position": {
+        "x": -26.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "apb Master Sequencer",
+        "class_count": 1,
+        "classes": [
+          "apb_master_sequencer"
+        ]
+      }
+    },
+    {
+      "name": "master_driver",
+      "module": "master_driver",
+      "position": {
+        "x": -18.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "apb Master Driver",
+        "class_count": 1,
+        "classes": [
+          "apb_master_driver_proxy"
+        ]
+      }
+    },
+    {
+      "name": "master_monitor",
+      "module": "master_monitor",
+      "position": {
+        "x": -10.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "apb Master Monitor",
+        "class_count": 1,
+        "classes": [
+          "apb_master_monitor_proxy"
+        ]
+      }
+    },
+    {
+      "name": "master_coverage",
+      "module": "master_coverage",
+      "position": {
+        "x": -2.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "apb Master Coverage",
+        "class_count": 1,
+        "classes": [
+          "apb_master_coverage"
+        ]
       }
     },
     {
       "name": "slave_agent",
       "module": "slave_agent",
       "position": {
-        "x": 10,
+        "x": 14,
         "y": 0,
-        "z": 2
+        "z": 0
       },
       "info": {
+        "description": "apb Slave Agent",
         "class_count": 9,
         "classes": [
-          "apb_slave_tx",
-          "apb_slave_agent_config",
-          "apb_slave_seq_item_converter",
-          "apb_slave_cfg_converter",
-          "apb_slave_sequencer",
-          "apb_slave_driver_proxy",
-          "apb_slave_monitor_proxy",
-          "apb_slave_coverage",
           "apb_slave_agent"
-        ],
-        "description": "apb Slave Agent"
+        ]
+      }
+    },
+    {
+      "name": "slave_sequencer",
+      "module": "slave_sequencer",
+      "position": {
+        "x": 2.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "apb Slave Sequencer",
+        "class_count": 1,
+        "classes": [
+          "apb_slave_sequencer"
+        ]
+      }
+    },
+    {
+      "name": "slave_driver",
+      "module": "slave_driver",
+      "position": {
+        "x": 10.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "apb Slave Driver",
+        "class_count": 1,
+        "classes": [
+          "apb_slave_driver_proxy"
+        ]
+      }
+    },
+    {
+      "name": "slave_monitor",
+      "module": "slave_monitor",
+      "position": {
+        "x": 18.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "apb Slave Monitor",
+        "class_count": 1,
+        "classes": [
+          "apb_slave_monitor_proxy"
+        ]
+      }
+    },
+    {
+      "name": "slave_coverage",
+      "module": "slave_coverage",
+      "position": {
+        "x": 26.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "apb Slave Coverage",
+        "class_count": 1,
+        "classes": [
+          "apb_slave_coverage"
+        ]
       }
     },
     {
       "name": "apb_if",
       "module": "iface_apb_if",
       "position": {
-        "x": -12,
-        "y": 0,
-        "z": 20
+        "x": -16,
+        "y": -14,
+        "z": 0
       },
       "info": {
         "signal_count": 4,
@@ -874,8 +966,8 @@
     },
     {
       "id": "env_to_master",
-      "type": "tlm",
-      "color": "#29B6F6",
+      "type": "hierarchy",
+      "color": "#CE93D8",
       "from": {
         "instance": "env",
         "port": "master_agent"
@@ -894,8 +986,8 @@
     },
     {
       "id": "env_to_slave",
-      "type": "tlm",
-      "color": "#29B6F6",
+      "type": "hierarchy",
+      "color": "#CE93D8",
       "from": {
         "instance": "env",
         "port": "slave_agent"
@@ -913,16 +1005,16 @@
       "description": "Environment instantiates slave agent"
     },
     {
-      "id": "seq_to_master",
+      "id": "seq_to_master_sqr",
       "type": "tlm",
-      "color": "#FFC107",
+      "color": "#29B6F6",
       "from": {
         "instance": "sequences",
         "port": "seq_item_port"
       },
       "to": {
-        "instance": "master_agent",
-        "port": "sequencer"
+        "instance": "master_sequencer",
+        "port": "seq_item_export"
       },
       "signals": [
         {
@@ -933,11 +1025,131 @@
       "description": "Sequences drive transactions via sequencer"
     },
     {
-      "id": "master_to_apb_if",
+      "id": "master_sqr_to_drv",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_sequencer",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "master_driver",
+        "port": "seq_item_export"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "master sequencer \u2192 driver (TLM)"
+    },
+    {
+      "id": "master_mon_to_env",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_monitor",
+        "port": "analysis_port"
+      },
+      "to": {
+        "instance": "env",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "analysis_port",
+          "width": 1
+        }
+      ],
+      "description": "master monitor \u2192 scoreboard (TLM)"
+    },
+    {
+      "id": "master_mon_to_cov",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_monitor",
+        "port": "cov_port"
+      },
+      "to": {
+        "instance": "master_coverage",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "coverage_port",
+          "width": 1
+        }
+      ],
+      "description": "master monitor \u2192 coverage (TLM)"
+    },
+    {
+      "id": "slave_sqr_to_drv",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_sequencer",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "slave_driver",
+        "port": "seq_item_export"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "slave sequencer \u2192 driver (TLM)"
+    },
+    {
+      "id": "slave_mon_to_env",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_monitor",
+        "port": "analysis_port"
+      },
+      "to": {
+        "instance": "env",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "analysis_port",
+          "width": 1
+        }
+      ],
+      "description": "slave monitor \u2192 scoreboard (TLM)"
+    },
+    {
+      "id": "slave_mon_to_cov",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_monitor",
+        "port": "cov_port"
+      },
+      "to": {
+        "instance": "slave_coverage",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "coverage_port",
+          "width": 1
+        }
+      ],
+      "description": "slave monitor \u2192 coverage (TLM)"
+    },
+    {
+      "id": "master_driver_to_apb_if",
       "type": "signal",
       "color": "#FFC107",
       "from": {
-        "instance": "master_agent",
+        "instance": "master_driver",
         "port": "vif"
       },
       "to": {
@@ -962,10 +1174,10 @@
           "width": 1
         }
       ],
-      "description": "Master \u2194 apb_if (4 signals)"
+      "description": "master_driver \u2194 apb_if (4 signals)"
     },
     {
-      "id": "apb_if_to_slave",
+      "id": "apb_if_to_slave_driver",
       "type": "signal",
       "color": "#FFC107",
       "from": {
@@ -973,7 +1185,7 @@
         "port": "slave_side"
       },
       "to": {
-        "instance": "slave_agent",
+        "instance": "slave_driver",
         "port": "vif"
       },
       "signals": [
@@ -994,33 +1206,77 @@
           "width": 1
         }
       ],
-      "description": "apb_if \u2194 Slave (4 signals)"
+      "description": "apb_if \u2194 slave_driver (4 signals)"
     }
   ],
   "groups": [
     {
-      "name": "APB Testbench",
+      "name": "APB Master Agent",
       "instances": [
-        "tests",
-        "env",
-        "sequences",
         "master_agent",
-        "slave_agent",
-        "apb_if"
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage"
       ],
-      "color": "#37474F",
-      "description": "Top-level APB UVC testbench"
+      "color": "#1565C0",
+      "padding": 1.0,
+      "description": "APB master agent (sequencer, driver, monitor, coverage)"
+    },
+    {
+      "name": "APB Slave Agent",
+      "instances": [
+        "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage"
+      ],
+      "color": "#4A148C",
+      "padding": 1.0,
+      "description": "APB slave agent (sequencer, driver, monitor, coverage)"
     },
     {
       "name": "APB Environment",
       "instances": [
         "env",
         "master_agent",
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage",
         "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage",
         "sequences"
       ],
       "color": "#1B5E20",
-      "description": "APB UVM environment with agents"
+      "padding": 2.0,
+      "description": "APB UVM environment with agents and scoreboard"
+    },
+    {
+      "name": "APB Testbench",
+      "instances": [
+        "tests",
+        "sequences",
+        "env",
+        "master_agent",
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage",
+        "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage",
+        "apb_if"
+      ],
+      "color": "#37474F",
+      "padding": 3.0,
+      "description": "Top-level APB UVC testbench (tb_top)"
     }
   ]
 }

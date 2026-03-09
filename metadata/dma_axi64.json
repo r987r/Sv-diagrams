@@ -5411,8 +5411,8 @@
       "module": "dma_axi64",
       "position": {
         "x": 0,
-        "y": 0,
-        "z": -20
+        "y": 12,
+        "z": 0
       },
       "info": {
         "module_name": "dma_axi64",
@@ -5590,9 +5590,9 @@
       "name": "dual_core",
       "module": "dual_core",
       "position": {
-        "x": -14.0,
-        "y": 0,
-        "z": -14.0
+        "x": -16.0,
+        "y": 6,
+        "z": -7.0
       },
       "info": {
         "module_name": "dma_axi64_dual_core",
@@ -5771,8 +5771,8 @@
       "module": "top",
       "position": {
         "x": 0.0,
-        "y": 0,
-        "z": -14.0
+        "y": 6,
+        "z": -7.0
       },
       "info": {
         "module_name": "dma_axi64_core0_top",
@@ -5951,9 +5951,9 @@
       "name": "reg",
       "module": "reg",
       "position": {
-        "x": 14.0,
-        "y": 0,
-        "z": -14.0
+        "x": 16.0,
+        "y": 6,
+        "z": -7.0
       },
       "info": {
         "module_name": "dma_axi64_reg",
@@ -6121,9 +6121,9 @@
       "name": "apb_mux",
       "module": "apb_mux",
       "position": {
-        "x": -14.0,
-        "y": 0,
-        "z": -2.0
+        "x": -16.0,
+        "y": 6,
+        "z": 7.0
       },
       "info": {
         "module_name": "dma_axi64_apb_mux",
@@ -6246,9 +6246,9 @@
       "name": "core0",
       "module": "core0",
       "position": {
-        "x": -18.0,
+        "x": -21.0,
         "y": 0,
-        "z": -5.0
+        "z": -18.0
       },
       "info": {
         "module_name": "dma_axi64_core0",
@@ -6428,9 +6428,9 @@
       "name": "arbiter",
       "module": "arbiter",
       "position": {
-        "x": -6.0,
+        "x": -7.0,
         "y": 0,
-        "z": -5.0
+        "z": -18.0
       },
       "info": {
         "module_name": "dma_axi64_core0_arbiter",
@@ -6542,9 +6542,9 @@
       "name": "axim_cmd",
       "module": "axim_cmd",
       "position": {
-        "x": 6.0,
+        "x": 7.0,
         "y": 0,
-        "z": -5.0
+        "z": -18.0
       },
       "info": {
         "module_name": "dma_axi64_core0_axim_cmd",
@@ -6714,9 +6714,9 @@
       "name": "axim_rd",
       "module": "axim_rd",
       "position": {
-        "x": 18.0,
+        "x": 21.0,
         "y": 0,
-        "z": -5.0
+        "z": -18.0
       },
       "info": {
         "module_name": "dma_axi64_core0_axim_rd",
@@ -6896,9 +6896,9 @@
       "name": "axim_rdata",
       "module": "axim_rdata",
       "position": {
-        "x": -18.0,
+        "x": -21.0,
         "y": 0,
-        "z": 5.0
+        "z": -6.0
       },
       "info": {
         "module_name": "dma_axi64_core0_axim_rdata",
@@ -7055,9 +7055,9 @@
       "name": "axim_resp",
       "module": "axim_resp",
       "position": {
-        "x": -6.0,
+        "x": -7.0,
         "y": 0,
-        "z": 5.0
+        "z": -6.0
       },
       "info": {
         "module_name": "dma_axi64_core0_axim_resp",
@@ -7164,9 +7164,9 @@
       "name": "axim_timeout",
       "module": "axim_timeout",
       "position": {
-        "x": 6.0,
+        "x": 7.0,
         "y": 0,
-        "z": 5.0
+        "z": -6.0
       },
       "info": {
         "module_name": "dma_axi64_core0_axim_timeout",
@@ -7228,9 +7228,9 @@
       "name": "axim_wdata",
       "module": "axim_wdata",
       "position": {
-        "x": 18.0,
+        "x": 21.0,
         "y": 0,
-        "z": 5.0
+        "z": -6.0
       },
       "info": {
         "module_name": "dma_axi64_core0_axim_wdata",
@@ -7407,9 +7407,9 @@
       "name": "axim_wr",
       "module": "axim_wr",
       "position": {
-        "x": -18.0,
+        "x": -21.0,
         "y": 0,
-        "z": 15.0
+        "z": 6.0
       },
       "info": {
         "module_name": "dma_axi64_core0_axim_wr",
@@ -7589,9 +7589,9 @@
       "name": "ch",
       "module": "ch",
       "position": {
-        "x": -6.0,
+        "x": -7.0,
         "y": 0,
-        "z": 15.0
+        "z": 6.0
       },
       "info": {
         "module_name": "dma_axi64_core0_ch",
@@ -7773,9 +7773,9 @@
       "name": "channels",
       "module": "channels",
       "position": {
-        "x": 6.0,
+        "x": 7.0,
         "y": 0,
-        "z": 15.0
+        "z": 6.0
       },
       "info": {
         "module_name": "dma_axi64_core0_channels",
@@ -7957,9 +7957,9 @@
       "name": "channels_mux",
       "module": "channels_mux",
       "position": {
-        "x": 18.0,
+        "x": 21.0,
         "y": 0,
-        "z": 15.0
+        "z": 6.0
       },
       "info": {
         "module_name": "dma_axi64_core0_channels_mux",
@@ -8139,9 +8139,9 @@
       "name": "ctrl",
       "module": "ctrl",
       "position": {
-        "x": -18.0,
+        "x": -21.0,
         "y": 0,
-        "z": 25.0
+        "z": 18.0
       },
       "info": {
         "module_name": "dma_axi64_core0_ctrl",
@@ -8273,9 +8273,9 @@
       "name": "wdt",
       "module": "wdt",
       "position": {
-        "x": -6.0,
+        "x": -7.0,
         "y": 0,
-        "z": 25.0
+        "z": 18.0
       },
       "info": {
         "module_name": "dma_axi64_core0_wdt",
@@ -10286,6 +10286,44 @@
   ],
   "groups": [
     {
+      "name": "AXI Master Interface",
+      "instances": [
+        "axim_cmd",
+        "axim_rd",
+        "axim_rdata",
+        "axim_resp",
+        "axim_timeout",
+        "axim_wdata",
+        "axim_wr"
+      ],
+      "color": "#0D47A1",
+      "padding": 1.0,
+      "description": "AXI master read/write data path"
+    },
+    {
+      "name": "DMA Channels",
+      "instances": [
+        "ch",
+        "channels",
+        "channels_mux"
+      ],
+      "color": "#4A148C",
+      "padding": 1.0,
+      "description": "DMA channel logic and multiplexing"
+    },
+    {
+      "name": "Core Infrastructure",
+      "instances": [
+        "dual_core",
+        "top",
+        "reg",
+        "apb_mux"
+      ],
+      "color": "#1B5E20",
+      "padding": 1.5,
+      "description": "Core modules: top, dual_core, registers"
+    },
+    {
       "name": "DMA AXI64 Design",
       "instances": [
         "dma_axi64",
@@ -10309,42 +10347,8 @@
         "wdt"
       ],
       "color": "#37474F",
+      "padding": 3.0,
       "description": "DMA AXI 64-bit top-level design"
-    },
-    {
-      "name": "Core Infrastructure",
-      "instances": [
-        "dual_core",
-        "top",
-        "reg",
-        "apb_mux"
-      ],
-      "color": "#1B5E20",
-      "description": "Core modules: top, dual_core, registers"
-    },
-    {
-      "name": "AXI Master Interface",
-      "instances": [
-        "axim_cmd",
-        "axim_rd",
-        "axim_rdata",
-        "axim_resp",
-        "axim_timeout",
-        "axim_wdata",
-        "axim_wr"
-      ],
-      "color": "#0D47A1",
-      "description": "AXI master read/write data path"
-    },
-    {
-      "name": "DMA Channels",
-      "instances": [
-        "ch",
-        "channels",
-        "channels_mux"
-      ],
-      "color": "#4A148C",
-      "description": "DMA channel logic and multiplexing"
     }
   ]
 }

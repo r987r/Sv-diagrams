@@ -206,6 +206,54 @@
       "color": "#1565C0",
       "ports": [
         {
+          "name": "uartTxAgentConfig",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartTxAgentConfig"
+        },
+        {
+          "name": "uartTxDriverProxy",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartTxDriverProxy"
+        },
+        {
+          "name": "uartTxMonitorProxy",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartTxMonitorProxy"
+        },
+        {
+          "name": "uartTxCoverage",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartTxCoverage"
+        },
+        {
+          "name": "uartTxSequencer",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartTxSequencer"
+        },
+        {
+          "name": "synchronizer",
+          "direction": "InOut",
+          "width": 1,
+          "type": "event"
+        },
+        {
+          "name": "uartTxAgentAnalysisPort",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "uartTxAgentAnalysisPort",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
           "name": "is_active",
           "direction": "InOut",
           "width": 1,
@@ -294,43 +342,28 @@
           "direction": "InOut",
           "width": 1,
           "type": "bit"
-        },
-        {
-          "name": "transmissionData",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic[7:0]"
-        },
-        {
-          "name": "parity",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
-        {
-          "name": "parityError",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
-        {
-          "name": "breakingError",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
-        {
-          "name": "overrunError",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
-        {
-          "name": "framingError",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
+        }
+      ],
+      "classes": [
+        "UartTxAgent",
+        "UartTxAgentConfig",
+        "UartTxConfigConverter"
+      ],
+      "class_count": 3
+    },
+    "master_sequencer": {
+      "description": "uart Master Sequencer",
+      "color": "#1976D2",
+      "ports": [],
+      "classes": [
+        "UartTxSequencer"
+      ],
+      "class_count": 1
+    },
+    "master_driver": {
+      "description": "uart Master Driver",
+      "color": "#1E88E5",
+      "ports": [
         {
           "name": "uartTxDriverBfm",
           "direction": "InOut",
@@ -360,7 +393,17 @@
           "direction": "InOut",
           "width": 1,
           "type": "event"
-        },
+        }
+      ],
+      "classes": [
+        "UartTxDriverProxy"
+      ],
+      "class_count": 1
+    },
+    "master_monitor": {
+      "description": "uart Master Monitor",
+      "color": "#2196F3",
+      "ports": [
         {
           "name": "uartTxMonitorBfm",
           "direction": "InOut",
@@ -384,25 +427,105 @@
           "direction": "InOut",
           "width": 1,
           "type": "UartTxAgentConfig"
+        },
+        {
+          "name": "monitorSynchronizer",
+          "direction": "InOut",
+          "width": 1,
+          "type": "event"
+        },
+        {
+          "name": "uartTxMonitorAnalysisPort",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "uartTxMonitorAnalysisPort",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
         }
       ],
       "classes": [
-        "UartTxAgentConfig",
-        "UartTxTransaction",
-        "UartTxSeqItemConverter",
-        "UartTxConfigConverter",
-        "UartTxSequencer",
-        "UartTxDriverProxy",
-        "UartTxMonitorProxy",
-        "UartTxCoverage",
-        "UartTxAgent"
+        "UartTxMonitorProxy"
       ],
-      "class_count": 9
+      "class_count": 1
+    },
+    "master_coverage": {
+      "description": "uart Master Coverage",
+      "color": "#42A5F5",
+      "ports": [
+        {
+          "name": "uartTxAgentConfig",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartTxAgentConfig"
+        },
+        {
+          "name": "data",
+          "direction": "InOut",
+          "width": 1,
+          "type": "bit[7:0]"
+        },
+        {
+          "name": "UartTxCovergroup",
+          "direction": "InOut",
+          "width": 1,
+          "type": "<unnamed covergroup>"
+        }
+      ],
+      "classes": [
+        "UartTxCoverage"
+      ],
+      "class_count": 1
     },
     "slave_agent": {
       "description": "uart Slave Agent",
       "color": "#4A148C",
       "ports": [
+        {
+          "name": "uartRxAgentConfig",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartRxAgentConfig"
+        },
+        {
+          "name": "uartRxDriverProxy",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartRxDriverProxy"
+        },
+        {
+          "name": "uartRxMonitorProxy",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartRxMonitorProxy"
+        },
+        {
+          "name": "uartRxCoverage",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartRxCoverage"
+        },
+        {
+          "name": "uartRxSequencer",
+          "direction": "InOut",
+          "width": 1,
+          "type": "UartRxSequencer"
+        },
+        {
+          "name": "uartRxAgentAnalysisPort",
+          "direction": "InOut",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
+        {
+          "name": "uartRxAgentAnalysisPort",
+          "direction": "Out",
+          "width": 1,
+          "type": "uvm_analysis_port"
+        },
         {
           "name": "is_active",
           "direction": "InOut",
@@ -492,49 +615,44 @@
           "direction": "InOut",
           "width": 1,
           "type": "bit"
-        },
-        {
-          "name": "receivingData",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic[7:0]"
-        },
-        {
-          "name": "parity",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
-        {
-          "name": "parityError",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
-        {
-          "name": "breakingError",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
-        {
-          "name": "overrunError",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
-        {
-          "name": "framingError",
-          "direction": "InOut",
-          "width": 1,
-          "type": "logic"
-        },
+        }
+      ],
+      "classes": [
+        "UartRxAgent",
+        "UartRxAgentConfig",
+        "UartRxConfigConverter"
+      ],
+      "class_count": 3
+    },
+    "slave_sequencer": {
+      "description": "uart Slave Sequencer",
+      "color": "#6A1B9A",
+      "ports": [],
+      "classes": [
+        "UartRxSequencer"
+      ],
+      "class_count": 1
+    },
+    "slave_driver": {
+      "description": "uart Slave Driver",
+      "color": "#7B1FA2",
+      "ports": [
         {
           "name": "uartRxDriverBfm",
           "direction": "InOut",
           "width": 1,
           "type": "UartRxDriverBfm"
-        },
+        }
+      ],
+      "classes": [
+        "UartRxDriverProxy"
+      ],
+      "class_count": 1
+    },
+    "slave_monitor": {
+      "description": "uart Slave Monitor",
+      "color": "#8E24AA",
+      "ports": [
         {
           "name": "uartRxMonitorBfm",
           "direction": "InOut",
@@ -570,7 +688,17 @@
           "direction": "Out",
           "width": 1,
           "type": "uvm_analysis_port"
-        },
+        }
+      ],
+      "classes": [
+        "UartRxMonitorProxy"
+      ],
+      "class_count": 1
+    },
+    "slave_coverage": {
+      "description": "uart Slave Coverage",
+      "color": "#AB47BC",
+      "ports": [
         {
           "name": "uartRxAgentConfig",
           "direction": "InOut",
@@ -582,20 +710,18 @@
           "direction": "InOut",
           "width": 1,
           "type": "bit[7:0]"
+        },
+        {
+          "name": "UartRxCovergroup",
+          "direction": "InOut",
+          "width": 1,
+          "type": "<unnamed covergroup>"
         }
       ],
       "classes": [
-        "UartRxAgentConfig",
-        "UartRxTransaction",
-        "UartRxSeqItemConverter",
-        "UartRxConfigConverter",
-        "UartRxSequencer",
-        "UartRxDriverProxy",
-        "UartRxMonitorProxy",
-        "UartRxCoverage",
-        "UartRxAgent"
+        "UartRxCoverage"
       ],
-      "class_count": 9
+      "class_count": 1
     },
     "iface_UartTxDriverBfm": {
       "description": "Interface: UartTxDriverBfm",
@@ -736,8 +862,8 @@
       "module": "tests",
       "position": {
         "x": 0,
-        "y": 0,
-        "z": -30
+        "y": 20,
+        "z": 0
       },
       "info": {
         "class_count": 16,
@@ -761,30 +887,11 @@
       }
     },
     {
-      "name": "env",
-      "module": "env",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": -16
-      },
-      "info": {
-        "class_count": 4,
-        "classes": [
-          "UartEnvConfig",
-          "UartVirtualSequencer",
-          "UartScoreboard",
-          "UartEnv"
-        ],
-        "description": "uart UVM Environment"
-      }
-    },
-    {
       "name": "sequences",
       "module": "sequences",
       "position": {
-        "x": -28,
-        "y": 0,
+        "x": -24,
+        "y": 14,
         "z": 0
       },
       "info": {
@@ -798,60 +905,191 @@
       }
     },
     {
+      "name": "env",
+      "module": "env",
+      "position": {
+        "x": 0,
+        "y": 8,
+        "z": 0
+      },
+      "info": {
+        "class_count": 4,
+        "classes": [
+          "UartEnvConfig",
+          "UartVirtualSequencer",
+          "UartScoreboard",
+          "UartEnv"
+        ],
+        "description": "uart UVM Environment"
+      }
+    },
+    {
       "name": "master_agent",
       "module": "master_agent",
       "position": {
-        "x": -10,
+        "x": -14,
         "y": 0,
-        "z": 2
+        "z": 0
       },
       "info": {
+        "description": "uart Master Agent",
         "class_count": 9,
         "classes": [
-          "UartTxAgentConfig",
-          "UartTxTransaction",
-          "UartTxSeqItemConverter",
-          "UartTxConfigConverter",
-          "UartTxSequencer",
-          "UartTxDriverProxy",
-          "UartTxMonitorProxy",
-          "UartTxCoverage",
           "UartTxAgent"
-        ],
-        "description": "uart Master Agent"
+        ]
+      }
+    },
+    {
+      "name": "master_sequencer",
+      "module": "master_sequencer",
+      "position": {
+        "x": -26.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "uart Master Sequencer",
+        "class_count": 1,
+        "classes": [
+          "UartTxSequencer"
+        ]
+      }
+    },
+    {
+      "name": "master_driver",
+      "module": "master_driver",
+      "position": {
+        "x": -18.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "uart Master Driver",
+        "class_count": 1,
+        "classes": [
+          "UartTxDriverProxy"
+        ]
+      }
+    },
+    {
+      "name": "master_monitor",
+      "module": "master_monitor",
+      "position": {
+        "x": -10.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "uart Master Monitor",
+        "class_count": 1,
+        "classes": [
+          "UartTxMonitorProxy"
+        ]
+      }
+    },
+    {
+      "name": "master_coverage",
+      "module": "master_coverage",
+      "position": {
+        "x": -2.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "uart Master Coverage",
+        "class_count": 1,
+        "classes": [
+          "UartTxCoverage"
+        ]
       }
     },
     {
       "name": "slave_agent",
       "module": "slave_agent",
       "position": {
-        "x": 10,
+        "x": 14,
         "y": 0,
-        "z": 2
+        "z": 0
       },
       "info": {
+        "description": "uart Slave Agent",
         "class_count": 9,
         "classes": [
-          "UartRxAgentConfig",
-          "UartRxTransaction",
-          "UartRxSeqItemConverter",
-          "UartRxConfigConverter",
-          "UartRxSequencer",
-          "UartRxDriverProxy",
-          "UartRxMonitorProxy",
-          "UartRxCoverage",
           "UartRxAgent"
-        ],
-        "description": "uart Slave Agent"
+        ]
+      }
+    },
+    {
+      "name": "slave_sequencer",
+      "module": "slave_sequencer",
+      "position": {
+        "x": 2.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "uart Slave Sequencer",
+        "class_count": 1,
+        "classes": [
+          "UartRxSequencer"
+        ]
+      }
+    },
+    {
+      "name": "slave_driver",
+      "module": "slave_driver",
+      "position": {
+        "x": 10.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "uart Slave Driver",
+        "class_count": 1,
+        "classes": [
+          "UartRxDriverProxy"
+        ]
+      }
+    },
+    {
+      "name": "slave_monitor",
+      "module": "slave_monitor",
+      "position": {
+        "x": 18.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "uart Slave Monitor",
+        "class_count": 1,
+        "classes": [
+          "UartRxMonitorProxy"
+        ]
+      }
+    },
+    {
+      "name": "slave_coverage",
+      "module": "slave_coverage",
+      "position": {
+        "x": 26.0,
+        "y": -6,
+        "z": 0
+      },
+      "info": {
+        "description": "uart Slave Coverage",
+        "class_count": 1,
+        "classes": [
+          "UartRxCoverage"
+        ]
       }
     },
     {
       "name": "UartTxDriverBfm",
       "module": "iface_UartTxDriverBfm",
       "position": {
-        "x": -12,
-        "y": 0,
-        "z": 20
+        "x": -16,
+        "y": -14,
+        "z": 0
       },
       "info": {
         "signal_count": 1,
@@ -868,9 +1106,9 @@
       "name": "UartTxMonitorBfm",
       "module": "iface_UartTxMonitorBfm",
       "position": {
-        "x": 2,
-        "y": 0,
-        "z": 20
+        "x": -4,
+        "y": -14,
+        "z": 0
       },
       "info": {
         "signal_count": 3,
@@ -895,9 +1133,9 @@
       "name": "UartInterface",
       "module": "iface_UartInterface",
       "position": {
-        "x": 16,
-        "y": 0,
-        "z": 20
+        "x": 8,
+        "y": -14,
+        "z": 0
       },
       "info": {
         "signal_count": 2,
@@ -918,9 +1156,9 @@
       "name": "UartRxDriverBfm",
       "module": "iface_UartRxDriverBfm",
       "position": {
-        "x": 30,
-        "y": 0,
-        "z": 20
+        "x": 20,
+        "y": -14,
+        "z": 0
       },
       "info": {
         "signal_count": 2,
@@ -941,9 +1179,9 @@
       "name": "UartRxMonitorBfm",
       "module": "iface_UartRxMonitorBfm",
       "position": {
-        "x": 44,
-        "y": 0,
-        "z": 20
+        "x": 32,
+        "y": -14,
+        "z": 0
       },
       "info": {
         "signal_count": 3,
@@ -988,8 +1226,8 @@
     },
     {
       "id": "env_to_master",
-      "type": "tlm",
-      "color": "#29B6F6",
+      "type": "hierarchy",
+      "color": "#CE93D8",
       "from": {
         "instance": "env",
         "port": "master_agent"
@@ -1008,8 +1246,8 @@
     },
     {
       "id": "env_to_slave",
-      "type": "tlm",
-      "color": "#29B6F6",
+      "type": "hierarchy",
+      "color": "#CE93D8",
       "from": {
         "instance": "env",
         "port": "slave_agent"
@@ -1027,16 +1265,16 @@
       "description": "Environment instantiates slave agent"
     },
     {
-      "id": "seq_to_master",
+      "id": "seq_to_master_sqr",
       "type": "tlm",
-      "color": "#FFC107",
+      "color": "#29B6F6",
       "from": {
         "instance": "sequences",
         "port": "seq_item_port"
       },
       "to": {
-        "instance": "master_agent",
-        "port": "sequencer"
+        "instance": "master_sequencer",
+        "port": "seq_item_export"
       },
       "signals": [
         {
@@ -1047,11 +1285,131 @@
       "description": "Sequences drive transactions via sequencer"
     },
     {
-      "id": "master_to_UartTxDriverBfm",
+      "id": "master_sqr_to_drv",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_sequencer",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "master_driver",
+        "port": "seq_item_export"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "master sequencer \u2192 driver (TLM)"
+    },
+    {
+      "id": "master_mon_to_env",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_monitor",
+        "port": "analysis_port"
+      },
+      "to": {
+        "instance": "env",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "analysis_port",
+          "width": 1
+        }
+      ],
+      "description": "master monitor \u2192 scoreboard (TLM)"
+    },
+    {
+      "id": "master_mon_to_cov",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "master_monitor",
+        "port": "cov_port"
+      },
+      "to": {
+        "instance": "master_coverage",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "coverage_port",
+          "width": 1
+        }
+      ],
+      "description": "master monitor \u2192 coverage (TLM)"
+    },
+    {
+      "id": "slave_sqr_to_drv",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_sequencer",
+        "port": "seq_item_port"
+      },
+      "to": {
+        "instance": "slave_driver",
+        "port": "seq_item_export"
+      },
+      "signals": [
+        {
+          "name": "seq_item_port",
+          "width": 1
+        }
+      ],
+      "description": "slave sequencer \u2192 driver (TLM)"
+    },
+    {
+      "id": "slave_mon_to_env",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_monitor",
+        "port": "analysis_port"
+      },
+      "to": {
+        "instance": "env",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "analysis_port",
+          "width": 1
+        }
+      ],
+      "description": "slave monitor \u2192 scoreboard (TLM)"
+    },
+    {
+      "id": "slave_mon_to_cov",
+      "type": "tlm",
+      "color": "#29B6F6",
+      "from": {
+        "instance": "slave_monitor",
+        "port": "cov_port"
+      },
+      "to": {
+        "instance": "slave_coverage",
+        "port": "analysis_export"
+      },
+      "signals": [
+        {
+          "name": "coverage_port",
+          "width": 1
+        }
+      ],
+      "description": "slave monitor \u2192 coverage (TLM)"
+    },
+    {
+      "id": "master_driver_to_UartTxDriverBfm",
       "type": "signal",
       "color": "#FFC107",
       "from": {
-        "instance": "master_agent",
+        "instance": "master_driver",
         "port": "vif"
       },
       "to": {
@@ -1064,10 +1422,10 @@
           "width": 1
         }
       ],
-      "description": "Master \u2194 UartTxDriverBfm (1 signals)"
+      "description": "master_driver \u2194 UartTxDriverBfm (1 signals)"
     },
     {
-      "id": "UartTxDriverBfm_to_slave",
+      "id": "UartTxDriverBfm_to_slave_driver",
       "type": "signal",
       "color": "#FFC107",
       "from": {
@@ -1075,7 +1433,7 @@
         "port": "slave_side"
       },
       "to": {
-        "instance": "slave_agent",
+        "instance": "slave_driver",
         "port": "vif"
       },
       "signals": [
@@ -1084,14 +1442,14 @@
           "width": 1
         }
       ],
-      "description": "UartTxDriverBfm \u2194 Slave (1 signals)"
+      "description": "UartTxDriverBfm \u2194 slave_driver (1 signals)"
     },
     {
-      "id": "master_to_UartTxMonitorBfm",
+      "id": "master_driver_to_UartTxMonitorBfm",
       "type": "signal",
       "color": "#FFC107",
       "from": {
-        "instance": "master_agent",
+        "instance": "master_driver",
         "port": "vif"
       },
       "to": {
@@ -1112,10 +1470,10 @@
           "width": 1
         }
       ],
-      "description": "Master \u2194 UartTxMonitorBfm (3 signals)"
+      "description": "master_driver \u2194 UartTxMonitorBfm (3 signals)"
     },
     {
-      "id": "UartTxMonitorBfm_to_slave",
+      "id": "UartTxMonitorBfm_to_slave_driver",
       "type": "signal",
       "color": "#FFC107",
       "from": {
@@ -1123,7 +1481,7 @@
         "port": "slave_side"
       },
       "to": {
-        "instance": "slave_agent",
+        "instance": "slave_driver",
         "port": "vif"
       },
       "signals": [
@@ -1140,14 +1498,14 @@
           "width": 1
         }
       ],
-      "description": "UartTxMonitorBfm \u2194 Slave (3 signals)"
+      "description": "UartTxMonitorBfm \u2194 slave_driver (3 signals)"
     },
     {
-      "id": "master_to_UartInterface",
+      "id": "master_driver_to_UartInterface",
       "type": "signal",
       "color": "#FFC107",
       "from": {
-        "instance": "master_agent",
+        "instance": "master_driver",
         "port": "vif"
       },
       "to": {
@@ -1164,10 +1522,10 @@
           "width": 1
         }
       ],
-      "description": "Master \u2194 UartInterface (2 signals)"
+      "description": "master_driver \u2194 UartInterface (2 signals)"
     },
     {
-      "id": "UartInterface_to_slave",
+      "id": "UartInterface_to_slave_driver",
       "type": "signal",
       "color": "#FFC107",
       "from": {
@@ -1175,7 +1533,7 @@
         "port": "slave_side"
       },
       "to": {
-        "instance": "slave_agent",
+        "instance": "slave_driver",
         "port": "vif"
       },
       "signals": [
@@ -1188,14 +1546,14 @@
           "width": 1
         }
       ],
-      "description": "UartInterface \u2194 Slave (2 signals)"
+      "description": "UartInterface \u2194 slave_driver (2 signals)"
     },
     {
-      "id": "master_to_UartRxDriverBfm",
+      "id": "master_driver_to_UartRxDriverBfm",
       "type": "signal",
       "color": "#FFC107",
       "from": {
-        "instance": "master_agent",
+        "instance": "master_driver",
         "port": "vif"
       },
       "to": {
@@ -1212,10 +1570,10 @@
           "width": 1
         }
       ],
-      "description": "Master \u2194 UartRxDriverBfm (2 signals)"
+      "description": "master_driver \u2194 UartRxDriverBfm (2 signals)"
     },
     {
-      "id": "UartRxDriverBfm_to_slave",
+      "id": "UartRxDriverBfm_to_slave_driver",
       "type": "signal",
       "color": "#FFC107",
       "from": {
@@ -1223,7 +1581,7 @@
         "port": "slave_side"
       },
       "to": {
-        "instance": "slave_agent",
+        "instance": "slave_driver",
         "port": "vif"
       },
       "signals": [
@@ -1236,14 +1594,14 @@
           "width": 1
         }
       ],
-      "description": "UartRxDriverBfm \u2194 Slave (2 signals)"
+      "description": "UartRxDriverBfm \u2194 slave_driver (2 signals)"
     },
     {
-      "id": "master_to_UartRxMonitorBfm",
+      "id": "master_driver_to_UartRxMonitorBfm",
       "type": "signal",
       "color": "#FFC107",
       "from": {
-        "instance": "master_agent",
+        "instance": "master_driver",
         "port": "vif"
       },
       "to": {
@@ -1264,10 +1622,10 @@
           "width": 1
         }
       ],
-      "description": "Master \u2194 UartRxMonitorBfm (3 signals)"
+      "description": "master_driver \u2194 UartRxMonitorBfm (3 signals)"
     },
     {
-      "id": "UartRxMonitorBfm_to_slave",
+      "id": "UartRxMonitorBfm_to_slave_driver",
       "type": "signal",
       "color": "#FFC107",
       "from": {
@@ -1275,7 +1633,7 @@
         "port": "slave_side"
       },
       "to": {
-        "instance": "slave_agent",
+        "instance": "slave_driver",
         "port": "vif"
       },
       "signals": [
@@ -1292,18 +1650,72 @@
           "width": 1
         }
       ],
-      "description": "UartRxMonitorBfm \u2194 Slave (3 signals)"
+      "description": "UartRxMonitorBfm \u2194 slave_driver (3 signals)"
     }
   ],
   "groups": [
     {
+      "name": "UART Master Agent",
+      "instances": [
+        "master_agent",
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage"
+      ],
+      "color": "#1565C0",
+      "padding": 1.0,
+      "description": "UART master agent (sequencer, driver, monitor, coverage)"
+    },
+    {
+      "name": "UART Slave Agent",
+      "instances": [
+        "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage"
+      ],
+      "color": "#4A148C",
+      "padding": 1.0,
+      "description": "UART slave agent (sequencer, driver, monitor, coverage)"
+    },
+    {
+      "name": "UART Environment",
+      "instances": [
+        "env",
+        "master_agent",
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage",
+        "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage",
+        "sequences"
+      ],
+      "color": "#1B5E20",
+      "padding": 2.0,
+      "description": "UART UVM environment with agents and scoreboard"
+    },
+    {
       "name": "UART Testbench",
       "instances": [
         "tests",
-        "env",
         "sequences",
+        "env",
         "master_agent",
+        "master_sequencer",
+        "master_driver",
+        "master_monitor",
+        "master_coverage",
         "slave_agent",
+        "slave_sequencer",
+        "slave_driver",
+        "slave_monitor",
+        "slave_coverage",
         "UartTxDriverBfm",
         "UartTxMonitorBfm",
         "UartInterface",
@@ -1311,18 +1723,8 @@
         "UartRxMonitorBfm"
       ],
       "color": "#37474F",
-      "description": "Top-level UART UVC testbench"
-    },
-    {
-      "name": "UART Environment",
-      "instances": [
-        "env",
-        "master_agent",
-        "slave_agent",
-        "sequences"
-      ],
-      "color": "#1B5E20",
-      "description": "UART UVM environment with agents"
+      "padding": 3.0,
+      "description": "Top-level UART UVC testbench (tb_top)"
     }
   ]
 }

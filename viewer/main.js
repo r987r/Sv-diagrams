@@ -374,28 +374,53 @@ async function buildScene(designPath) {
     objectMeta.set(mesh, { type: "instance", data: { instance: inst, module: mod } });
   }
 
-  // ── create groups (dashed enclosures) ───────────────────────────
-  for (const grp of groups) {
+  // ── create groups (nested dashed enclosures) ─────────────────────
+  // Sort by member count ascending so inner groups render first
+  const sortedGroups = [...groups].sort(
+    (a, b) => (a.instances?.length ?? 0) - (b.instances?.length ?? 0)
+  );
+
+  for (const grp of sortedGroups) {
     const grpInstances = (grp.instances ?? [])
       .map(n => instMap[n])
       .filter(Boolean);
     if (grpInstances.length === 0) continue;
 
-    const bounds = computeBounds(grpInstances.map(g => g.position), 6);
-    const cx = (bounds.xMin + bounds.xMax) / 2;
-    const cy = (bounds.yMin + bounds.yMax) / 2;
-    const cz = (bounds.zMin + bounds.zMax) / 2;
-    const w = bounds.xMax - bounds.xMin;
-    const h = Math.max(bounds.yMax - bounds.yMin, 4);
-    const d = bounds.zMax - bounds.zMin;
+    // Compute bounds from member cubes (include their sizes)
+    const pad = grp.padding ?? 2;
+    let xMin = Infinity, xMax = -Infinity;
+    let yMin = Infinity, yMax = -Infinity;
+    let zMin = Infinity, zMax = -Infinity;
+    for (const g of grpInstances) {
+      const p = g.position;
+      const hs = (g.sx ?? K.BASE_CUBE) / 2;
+      const hh = (g.sy ?? K.BASE_CUBE) / 2;
+      const hd = (g.sz ?? K.BASE_CUBE) / 2;
+      xMin = Math.min(xMin, (p.x ?? 0) - hs);
+      xMax = Math.max(xMax, (p.x ?? 0) + hs);
+      yMin = Math.min(yMin, (p.y ?? 0) - hh);
+      yMax = Math.max(yMax, (p.y ?? 0) + hh);
+      zMin = Math.min(zMin, (p.z ?? 0) - hd);
+      zMax = Math.max(zMax, (p.z ?? 0) + hd);
+    }
+    xMin -= pad; xMax += pad;
+    yMin -= pad; yMax += pad;
+    zMin -= pad; zMax += pad;
+
+    const cx = (xMin + xMax) / 2;
+    const cy = (yMin + yMax) / 2;
+    const cz = (zMin + zMax) / 2;
+    const w = xMax - xMin;
+    const h = Math.max(yMax - yMin, 2);
+    const d = zMax - zMin;
 
     const grpColor = parseInt((grp.color ?? "#546E7A").replace("#", ""), 16);
     const box = dashedBox(cx, cy, cz, w, h, d, grpColor);
     scene.add(box);
 
-    // group label
+    // group label at top of the box
     const label = makeLabel(grp.name, "group-label");
-    label.position.set(cx, cy + h / 2 + 1, cz);
+    label.position.set(cx, yMax + 1.2, cz);
     scene.add(label);
     lodObjects.push({ obj: label, maxDist: K.LOD_DIST * 1.5 });
 

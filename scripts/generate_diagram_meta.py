@@ -98,22 +98,45 @@ def _port_summary(ports):
 # ── VIP (UVC) diagram builder ────────────────────────────────────────────
 
 def build_vip_diagram(meta, design_name, description):
-    """Build a diagram JSON from a VIP metadata file."""
+    """Build a diagram JSON from a VIP metadata file.
+
+    Creates a hierarchical composition layout:
+      tb_top (outermost)
+        └─ environment
+             ├─ master_agent
+             │    ├─ master_sequencer
+             │    ├─ master_driver
+             │    ├─ master_monitor
+             │    └─ master_coverage
+             ├─ slave_agent
+             │    ├─ slave_sequencer
+             │    ├─ slave_driver
+             │    ├─ slave_monitor
+             │    └─ slave_coverage
+             └─ scoreboard
+        ├─ tests
+        ├─ sequences
+        └─ interfaces (HDL layer)
+    """
     modules = {}
     instances = []
     connections = []
     groups = []
-    instance_idx = 0
 
     protocol = meta.get("vip_info", {}).get("protocol", design_name)
     pkgs = meta.get("packages", [])
     ifaces = meta.get("interfaces", [])
     arch = meta.get("architecture", {})
+    proto_upper = protocol.upper()
 
-    # ── Build module definitions from packages ────────────────────────
-    # Environment-level components
+    # ── Classify all classes ──────────────────────────────────────────
     env_classes = []
-    agent_classes = {"master": [], "slave": []}
+    master_classes = {"agent": [], "driver": [], "monitor": [],
+                      "sequencer": [], "coverage": [], "config": [],
+                      "transaction": [], "converter": [], "other": []}
+    slave_classes = {"agent": [], "driver": [], "monitor": [],
+                     "sequencer": [], "coverage": [], "config": [],
+                     "transaction": [], "converter": [], "other": []}
     seq_classes = []
     test_classes = []
     other_classes = []
@@ -131,9 +154,9 @@ def build_vip_diagram(meta, design_name, description):
             if role == "env":
                 env_classes.append(cls)
             elif role == "agent_master":
-                agent_classes["master"].append(cls)
+                _classify_agent_sub(cls, master_classes)
             elif role == "agent_slave":
-                agent_classes["slave"].append(cls)
+                _classify_agent_sub(cls, slave_classes)
             elif role in ("sequence", "virtual_sequence"):
                 seq_classes.append(cls)
             elif role == "test":
@@ -141,168 +164,124 @@ def build_vip_diagram(meta, design_name, description):
             else:
                 other_classes.append(cls)
 
-    # ── Create module defs for key UVM components ─────────────────────
+    # ── Module definitions ────────────────────────────────────────────
     # Testbench
     modules["testbench"] = {
-        "description": f"{protocol.upper()} UVC Testbench",
-        "color": "#37474F",
-        "ports": [],
+        "description": f"{proto_upper} UVC Testbench",
+        "color": "#37474F", "ports": [],
     }
 
     # Environment
-    env_info = _build_component_module(
-        env_classes, "env", f"{protocol} Environment", "#1B5E20"
-    )
-    modules["env"] = env_info
+    modules["env"] = _build_component_module(
+        env_classes, "env", f"{protocol} Environment", "#1B5E20")
 
-    # Master agent
-    master_info = _build_component_module(
-        agent_classes["master"], "master_agent",
-        f"{protocol} Master Agent", "#1565C0"
-    )
-    modules["master_agent"] = master_info
+    # Master agent sub-components
+    _add_agent_modules(modules, master_classes, "master", protocol, "#1565C0")
 
-    # Slave agent
-    slave_info = _build_component_module(
-        agent_classes["slave"], "slave_agent",
-        f"{protocol} Slave Agent", "#4A148C"
-    )
-    modules["slave_agent"] = slave_info
+    # Slave agent sub-components
+    _add_agent_modules(modules, slave_classes, "slave", protocol, "#4A148C")
 
-    # Interface
+    # Interfaces
     for iface in ifaces:
         iface_name = iface.get("name", "interface")
         signals = iface.get("signals", [])
         if not signals:
             continue
-        mod_key = f"iface_{iface_name}"
-        modules[mod_key] = {
+        modules[f"iface_{iface_name}"] = {
             "description": f"Interface: {iface_name}",
             "color": "#E65100",
             "ports": [
-                {
-                    "name": s.get("name", ""),
-                    "direction": "InOut",
-                    "width": _parse_width(s.get("range", s.get("type", ""))),
-                    "type": s.get("type", "logic"),
-                }
+                {"name": s.get("name", ""), "direction": "InOut",
+                 "width": _parse_width(s.get("range", s.get("type", ""))),
+                 "type": s.get("type", "logic")}
                 for s in signals
             ],
         }
 
-    # Sequences (grouped)
+    # Sequences
     if seq_classes:
         modules["sequences"] = {
             "description": f"{protocol} Sequences ({len(seq_classes)} classes)",
-            "color": "#F57F17",
-            "ports": [],
+            "color": "#F57F17", "ports": [],
             "classes": [c["name"] for c in seq_classes[:20]],
             "total_classes": len(seq_classes),
         }
 
-    # Tests (grouped)
+    # Tests
     if test_classes:
         modules["tests"] = {
             "description": f"{protocol} Tests ({len(test_classes)} classes)",
-            "color": "#880E4F",
-            "ports": [],
+            "color": "#880E4F", "ports": [],
             "classes": [c["name"] for c in test_classes[:20]],
             "total_classes": len(test_classes),
         }
 
-    # ── Create instances with positions ───────────────────────────────
-    # Layout: Testbench contains Environment contains Agents
-    # Tests at top, Sequences at sides, Interface at bottom
+    # ── Hierarchical Y-axis layout ────────────────────────────────────
+    # Y=20  Tests (top-level stimulus)
+    # Y=14  Sequences (virtual sequences)
+    # Y=8   Scoreboard / Env config (environment level)
+    # Y=0   Master/Slave agents (agent containers)
+    # Y=-6  Sequencer, Driver, Monitor, Coverage (agent internals)
+    # Y=-14 Interfaces / BFMs (HDL layer)
 
-    # Test block (top)
+    # Tests
     if test_classes:
         instances.append({
-            "name": "tests",
-            "module": "tests",
-            "position": {"x": 0, "y": 0, "z": -30},
-            "info": {
-                "class_count": len(test_classes),
-                "classes": [c["name"] for c in test_classes[:15]],
-            },
+            "name": "tests", "module": "tests",
+            "position": {"x": 0, "y": 20, "z": 0},
+            "info": {"class_count": len(test_classes),
+                     "classes": [c["name"] for c in test_classes[:15]]},
+        })
+
+    # Sequences
+    if seq_classes:
+        instances.append({
+            "name": "sequences", "module": "sequences",
+            "position": {"x": -24, "y": 14, "z": 0},
+            "info": {"class_count": len(seq_classes),
+                     "classes": [c["name"] for c in seq_classes[:15]]},
         })
 
     # Environment
     instances.append({
-        "name": "env",
-        "module": "env",
-        "position": {"x": 0, "y": 0, "z": -16},
-        "info": {
-            "class_count": len(env_classes),
-            "classes": [c["name"] for c in env_classes],
-            "description": f"{protocol} UVM Environment",
-        },
+        "name": "env", "module": "env",
+        "position": {"x": 0, "y": 8, "z": 0},
+        "info": {"class_count": len(env_classes),
+                 "classes": [c["name"] for c in env_classes],
+                 "description": f"{protocol} UVM Environment"},
     })
 
-    # Sequence blocks
-    if seq_classes:
-        instances.append({
-            "name": "sequences",
-            "module": "sequences",
-            "position": {"x": -28, "y": 0, "z": 0},
-            "info": {
-                "class_count": len(seq_classes),
-                "classes": [c["name"] for c in seq_classes[:15]],
-            },
-        })
+    # Master agent (container) and its sub-components
+    master_x = -14
+    _add_agent_instances(instances, master_classes, "master", protocol,
+                         x_center=master_x, y_agent=0, y_sub=-6)
 
-    # Master agent
-    instances.append({
-        "name": "master_agent",
-        "module": "master_agent",
-        "position": {"x": -10, "y": 0, "z": 2},
-        "info": {
-            "class_count": len(agent_classes["master"]),
-            "classes": [c["name"] for c in agent_classes["master"]],
-            "description": f"{protocol} Master Agent",
-        },
-    })
+    # Slave agent (container) and its sub-components
+    slave_x = 14
+    _add_agent_instances(instances, slave_classes, "slave", protocol,
+                         x_center=slave_x, y_agent=0, y_sub=-6)
 
-    # Slave agent
-    instances.append({
-        "name": "slave_agent",
-        "module": "slave_agent",
-        "position": {"x": 10, "y": 0, "z": 2},
-        "info": {
-            "class_count": len(agent_classes["slave"]),
-            "classes": [c["name"] for c in agent_classes["slave"]],
-            "description": f"{protocol} Slave Agent",
-        },
-    })
-
-    # Interfaces with signals
-    iface_x = -12
+    # Interfaces (HDL layer – bottom)
+    iface_x = -16
     for iface in ifaces:
         iface_name = iface.get("name", "")
         signals = iface.get("signals", [])
         if not signals:
             continue
-        mod_key = f"iface_{iface_name}"
         instances.append({
-            "name": iface_name,
-            "module": mod_key,
-            "position": {"x": iface_x, "y": 0, "z": 20},
-            "info": {
-                "signal_count": len(signals),
-                "signals": [
-                    {"name": s.get("name", ""), "type": s.get("type", "")}
-                    for s in signals
-                ],
-                "description": f"Interface: {iface_name}",
-            },
+            "name": iface_name, "module": f"iface_{iface_name}",
+            "position": {"x": iface_x, "y": -14, "z": 0},
+            "info": {"signal_count": len(signals),
+                     "signals": [{"name": s.get("name", ""), "type": s.get("type", "")}
+                                 for s in signals],
+                     "description": f"Interface: {iface_name}"},
         })
-        iface_x += 14
+        iface_x += 12
 
-    # ── Build connections ─────────────────────────────────────────────
+    # ── Connections ───────────────────────────────────────────────────
     # Tests → Environment
     connections.append({
-        "id": "test_to_env",
-        "type": "hierarchy",
-        "color": "#CE93D8",
+        "id": "test_to_env", "type": "hierarchy", "color": "#CE93D8",
         "from": {"instance": "tests", "port": "env"},
         "to": {"instance": "env", "port": "create"},
         "signals": [{"name": "UVM hierarchy", "width": 1}],
@@ -311,9 +290,7 @@ def build_vip_diagram(meta, design_name, description):
 
     # Environment → Master Agent
     connections.append({
-        "id": "env_to_master",
-        "type": "tlm",
-        "color": TLM_COLOR,
+        "id": "env_to_master", "type": "hierarchy", "color": "#CE93D8",
         "from": {"instance": "env", "port": "master_agent"},
         "to": {"instance": "master_agent", "port": "parent"},
         "signals": [{"name": "agent_handle", "width": 1}],
@@ -322,109 +299,146 @@ def build_vip_diagram(meta, design_name, description):
 
     # Environment → Slave Agent
     connections.append({
-        "id": "env_to_slave",
-        "type": "tlm",
-        "color": TLM_COLOR,
+        "id": "env_to_slave", "type": "hierarchy", "color": "#CE93D8",
         "from": {"instance": "env", "port": "slave_agent"},
         "to": {"instance": "slave_agent", "port": "parent"},
         "signals": [{"name": "agent_handle", "width": 1}],
         "description": "Environment instantiates slave agent",
     })
 
-    # Sequences → Master Agent
+    # Sequences → Master Sequencer
     if seq_classes:
+        sqr_name = "master_sequencer"
+        if sqr_name not in {i["name"] for i in instances}:
+            sqr_name = "master_agent"
         connections.append({
-            "id": "seq_to_master",
-            "type": "tlm",
-            "color": "#FFC107",
+            "id": "seq_to_master_sqr", "type": "tlm", "color": TLM_COLOR,
             "from": {"instance": "sequences", "port": "seq_item_port"},
-            "to": {"instance": "master_agent", "port": "sequencer"},
+            "to": {"instance": sqr_name, "port": "seq_item_export"},
             "signals": [{"name": "seq_item_port", "width": 1}],
             "description": "Sequences drive transactions via sequencer",
         })
 
-    # TLM connections from architecture
-    tlm_conns = arch.get("tlm_connections", [])
-    for i, tlm in enumerate(tlm_conns):
-        src = tlm.get("from_component", tlm.get("source", ""))
-        dst = tlm.get("to_component", tlm.get("target", ""))
-        src_inst = _map_component_to_instance(src)
-        dst_inst = _map_component_to_instance(dst)
-        if src_inst and dst_inst and src_inst != dst_inst:
-            conn_id = f"tlm_{i}"
-            port_name = tlm.get("port_name", tlm.get("from_port", f"port_{i}"))
+    # Agent internal connections (sequencer → driver, monitor → scoreboard)
+    for side in ("master", "slave"):
+        inst_set = {i["name"] for i in instances}
+        sqr = f"{side}_sequencer"
+        drv = f"{side}_driver"
+        mon = f"{side}_monitor"
+        cov = f"{side}_coverage"
+        agt = f"{side}_agent"
+
+        if sqr in inst_set and drv in inst_set:
             connections.append({
-                "id": conn_id,
-                "type": "tlm",
-                "color": TLM_COLOR,
-                "from": {"instance": src_inst, "port": port_name},
-                "to": {"instance": dst_inst, "port": port_name},
-                "signals": [{"name": port_name, "width": 1}],
-                "description": f"TLM: {src} → {dst}",
+                "id": f"{side}_sqr_to_drv", "type": "tlm", "color": TLM_COLOR,
+                "from": {"instance": sqr, "port": "seq_item_port"},
+                "to": {"instance": drv, "port": "seq_item_export"},
+                "signals": [{"name": "seq_item_port", "width": 1}],
+                "description": f"{side} sequencer → driver (TLM)",
+            })
+        if mon in inst_set:
+            connections.append({
+                "id": f"{side}_mon_to_env", "type": "tlm", "color": TLM_COLOR,
+                "from": {"instance": mon, "port": "analysis_port"},
+                "to": {"instance": "env", "port": "analysis_export"},
+                "signals": [{"name": "analysis_port", "width": 1}],
+                "description": f"{side} monitor → scoreboard (TLM)",
+            })
+        if cov in inst_set and mon in inst_set:
+            connections.append({
+                "id": f"{side}_mon_to_cov", "type": "tlm", "color": TLM_COLOR,
+                "from": {"instance": mon, "port": "cov_port"},
+                "to": {"instance": cov, "port": "analysis_export"},
+                "signals": [{"name": "coverage_port", "width": 1}],
+                "description": f"{side} monitor → coverage (TLM)",
             })
 
-    # Interface connections (master agent ↔ interface ↔ slave agent)
+    # Interface connections (driver/monitor ↔ interface via virtual interface)
     for iface in ifaces:
         iface_name = iface.get("name", "")
         signals = iface.get("signals", [])
         if not signals:
             continue
-        # Master ↔ Interface
-        connections.append({
-            "id": f"master_to_{iface_name}",
-            "type": "signal",
-            "color": SIGNAL_COLOR,
-            "from": {"instance": "master_agent", "port": "vif"},
-            "to": {"instance": iface_name, "port": "master_side"},
-            "signals": [
-                {"name": s.get("name", ""), "width": _parse_width(
-                    s.get("range", s.get("type", ""))
-                )}
-                for s in signals
-            ],
-            "description": f"Master ↔ {iface_name} ({len(signals)} signals)",
-        })
-        # Interface ↔ Slave
-        connections.append({
-            "id": f"{iface_name}_to_slave",
-            "type": "signal",
-            "color": SIGNAL_COLOR,
-            "from": {"instance": iface_name, "port": "slave_side"},
-            "to": {"instance": "slave_agent", "port": "vif"},
-            "signals": [
-                {"name": s.get("name", ""), "width": _parse_width(
-                    s.get("range", s.get("type", ""))
-                )}
-                for s in signals
-            ],
-            "description": f"{iface_name} ↔ Slave ({len(signals)} signals)",
+        sig_list = [{"name": s.get("name", ""),
+                     "width": _parse_width(s.get("range", s.get("type", "")))}
+                    for s in signals]
+        inst_set = {i["name"] for i in instances}
+
+        # Master driver/monitor → interface
+        for comp in ("master_driver", "master_monitor", "master_agent"):
+            if comp in inst_set:
+                connections.append({
+                    "id": f"{comp}_to_{iface_name}", "type": "signal",
+                    "color": SIGNAL_COLOR,
+                    "from": {"instance": comp, "port": "vif"},
+                    "to": {"instance": iface_name, "port": "master_side"},
+                    "signals": sig_list,
+                    "description": f"{comp} ↔ {iface_name} ({len(signals)} signals)",
+                })
+                break
+
+        # Slave driver/monitor → interface
+        for comp in ("slave_driver", "slave_monitor", "slave_agent"):
+            if comp in inst_set:
+                connections.append({
+                    "id": f"{iface_name}_to_{comp}", "type": "signal",
+                    "color": SIGNAL_COLOR,
+                    "from": {"instance": iface_name, "port": "slave_side"},
+                    "to": {"instance": comp, "port": "vif"},
+                    "signals": sig_list,
+                    "description": f"{iface_name} ↔ {comp} ({len(signals)} signals)",
+                })
+                break
+
+    # ── Nested hierarchical groups ────────────────────────────────────
+    # Inner groups first (rendered first), outer groups last
+    all_names = [i["name"] for i in instances]
+
+    # Master agent sub-group (tight padding)
+    master_members = [n for n in all_names
+                      if n.startswith("master_")]
+    if master_members:
+        groups.append({
+            "name": f"{proto_upper} Master Agent",
+            "instances": master_members,
+            "color": "#1565C0", "padding": 1.0,
+            "description": f"{proto_upper} master agent (sequencer, driver, monitor, coverage)",
         })
 
-    # ── Build groups ──────────────────────────────────────────────────
-    groups.append({
-        "name": f"{protocol.upper()} Testbench",
-        "instances": [inst["name"] for inst in instances],
-        "color": "#37474F",
-        "description": f"Top-level {protocol.upper()} UVC testbench",
-    })
+    # Slave agent sub-group (tight padding)
+    slave_members = [n for n in all_names
+                     if n.startswith("slave_")]
+    if slave_members:
+        groups.append({
+            "name": f"{proto_upper} Slave Agent",
+            "instances": slave_members,
+            "color": "#4A148C", "padding": 1.0,
+            "description": f"{proto_upper} slave agent (sequencer, driver, monitor, coverage)",
+        })
 
-    env_group_insts = ["env", "master_agent", "slave_agent"]
+    # Environment group (contains agents + env + sequences)
+    env_members = ["env"] + master_members + slave_members
     if seq_classes:
-        env_group_insts.append("sequences")
+        env_members.append("sequences")
     groups.append({
-        "name": f"{protocol.upper()} Environment",
-        "instances": env_group_insts,
-        "color": "#1B5E20",
-        "description": f"{protocol.upper()} UVM environment with agents",
+        "name": f"{proto_upper} Environment",
+        "instances": env_members,
+        "color": "#1B5E20", "padding": 2.0,
+        "description": f"{proto_upper} UVM environment with agents and scoreboard",
     })
 
-    # ── Assemble design ──────────────────────────────────────────────
+    # Testbench (outermost – all instances)
+    groups.append({
+        "name": f"{proto_upper} Testbench",
+        "instances": all_names,
+        "color": "#37474F", "padding": 3.0,
+        "description": f"Top-level {proto_upper} UVC testbench (tb_top)",
+    })
+
+    # ── Assemble ──────────────────────────────────────────────────────
     total_classes = sum(len(p.get("classes", [])) for p in pkgs)
-    total_signals = sum(
-        len(i.get("signals", []))
-        for i in ifaces
-        if i.get("signals")
-    )
+    total_signals = sum(len(i.get("signals", []))
+                        for i in ifaces if i.get("signals"))
 
     return {
         "design_name": design_name,
@@ -451,6 +465,90 @@ def build_vip_diagram(meta, design_name, description):
         "connections": connections,
         "groups": groups,
     }
+
+
+def _classify_agent_sub(cls, bucket):
+    """Sub-classify a class within an agent into driver/monitor/etc."""
+    name = cls.get("name", "").lower()
+    base = cls.get("base_class", "").lower()
+    if "driver" in name or "driver" in base:
+        bucket["driver"].append(cls)
+    elif "monitor" in name or "monitor" in base:
+        bucket["monitor"].append(cls)
+    elif "sequencer" in name or "sequencer" in base:
+        bucket["sequencer"].append(cls)
+    elif "coverage" in name or "coverage" in base:
+        bucket["coverage"].append(cls)
+    elif "config" in name or "agent_config" in name:
+        bucket["config"].append(cls)
+    elif "transaction" in name or "seq_item" in base or "_tx" in name:
+        bucket["transaction"].append(cls)
+    elif "converter" in name:
+        bucket["converter"].append(cls)
+    elif "agent" in name or "agent" in base:
+        bucket["agent"].append(cls)
+    else:
+        bucket["other"].append(cls)
+
+
+def _add_agent_modules(modules, agent_cls, side, protocol, base_color):
+    """Add module definitions for agent sub-components."""
+    colors = {
+        "master": {"agent": "#1565C0", "sequencer": "#1976D2",
+                    "driver": "#1E88E5", "monitor": "#2196F3",
+                    "coverage": "#42A5F5"},
+        "slave":  {"agent": "#4A148C", "sequencer": "#6A1B9A",
+                    "driver": "#7B1FA2", "monitor": "#8E24AA",
+                    "coverage": "#AB47BC"},
+    }
+    col = colors.get(side, colors["master"])
+
+    # Agent container
+    all_classes = []
+    for v in agent_cls.values():
+        all_classes.extend(v)
+    modules[f"{side}_agent"] = _build_component_module(
+        agent_cls["agent"] + agent_cls["config"],
+        f"{side}_agent", f"{protocol} {side.title()} Agent", col["agent"])
+
+    # Sub-components (only if there are classes)
+    for role in ("sequencer", "driver", "monitor", "coverage"):
+        cls_list = agent_cls[role]
+        if cls_list:
+            modules[f"{side}_{role}"] = _build_component_module(
+                cls_list, f"{side}_{role}",
+                f"{protocol} {side.title()} {role.title()}", col[role])
+
+
+def _add_agent_instances(instances, agent_cls, side, protocol,
+                         x_center, y_agent, y_sub):
+    """Add positioned instances for an agent and its sub-components."""
+    # Agent container
+    instances.append({
+        "name": f"{side}_agent", "module": f"{side}_agent",
+        "position": {"x": x_center, "y": y_agent, "z": 0},
+        "info": {"description": f"{protocol} {side.title()} Agent",
+                 "class_count": sum(len(v) for v in agent_cls.values()),
+                 "classes": [c["name"] for c in agent_cls["agent"][:5]]},
+    })
+
+    # Sub-components laid out horizontally under the agent
+    sub_roles = ["sequencer", "driver", "monitor", "coverage"]
+    active_roles = [r for r in sub_roles if agent_cls[r]]
+    n = len(active_roles)
+    if n == 0:
+        return
+    spacing = 8
+    start_x = x_center - (n - 1) * spacing / 2
+    for i, role in enumerate(active_roles):
+        cls_list = agent_cls[role]
+        instances.append({
+            "name": f"{side}_{role}", "module": f"{side}_{role}",
+            "position": {"x": start_x + i * spacing, "y": y_sub, "z": 0},
+            "info": {"description": f"{protocol} {side.title()} {role.title()}",
+                     "class_count": len(cls_list),
+                     "classes": [c["name"] for c in cls_list[:5]]},
+        })
 
 
 def _classify_uvm_class(name, base, pkg_lower):
@@ -652,40 +750,44 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
         colour_idx += 1
 
     # ── Create instances with hierarchical positioning ────────────────
-    # Top module at center
+    # Y=12  Top module (top-level container)
+    # Y=6   Core modules (dual_core, top, reg, apb_mux)
+    # Y=0   Sub-modules (axim_*, channels, ctrl, wdt)
+
+    # Top module
     if top_module:
         tn, tm = top_module
         short = _shorten_dma_name(tn, data_width)
         instances.append({
             "name": short,
             "module": short,
-            "position": {"x": 0, "y": 0, "z": -20},
+            "position": {"x": 0, "y": 12, "z": 0},
             "info": _module_info(tm),
         })
 
-    # Core modules in a ring around center
+    # Core modules at Y=6
     core_layout = _layout_grid(
-        core_modules, cols=3, spacing_x=14, spacing_z=12, y=0
+        core_modules, cols=3, spacing_x=16, spacing_z=14, y=6
     )
     for (cn, cm), x, y, z in core_layout:
         short = _shorten_dma_name(cn, data_width)
         instances.append({
             "name": short,
             "module": short,
-            "position": {"x": x, "y": y, "z": z - 8},
+            "position": {"x": x, "y": y, "z": z},
             "info": _module_info(cm),
         })
 
-    # Sub-modules below
+    # Sub-modules at Y=0
     sub_layout = _layout_grid(
-        sub_modules, cols=4, spacing_x=12, spacing_z=10, y=0
+        sub_modules, cols=4, spacing_x=14, spacing_z=12, y=0
     )
     for (sn, sm), x, y, z in sub_layout:
         short = _shorten_dma_name(sn, data_width)
         instances.append({
             "name": short,
             "module": short,
-            "position": {"x": x, "y": y, "z": z + 10},
+            "position": {"x": x, "y": y, "z": z},
             "info": _module_info(sm),
         })
 
@@ -748,43 +850,45 @@ def build_dma_diagram(cache_dir, files, design_name, description, data_width):
 
     # ── Build groups ──────────────────────────────────────────────────
     all_inst_names = [inst["name"] for inst in instances]
-    groups.append({
-        "name": f"DMA AXI{data_width} Design",
-        "instances": all_inst_names,
-        "color": "#37474F",
-        "description": f"DMA AXI {data_width}-bit top-level design",
-    })
 
-    # Core group
+    # AXI master sub-group (inner, tight)
+    axim_names = [n for n in all_inst_names if "axim" in n]
+    if axim_names:
+        groups.append({
+            "name": "AXI Master Interface",
+            "instances": axim_names,
+            "color": "#0D47A1", "padding": 1.0,
+            "description": "AXI master read/write data path",
+        })
+
+    # Channel sub-group (inner, tight)
+    ch_names = [n for n in all_inst_names if n.startswith("ch") or "channel" in n]
+    if ch_names:
+        groups.append({
+            "name": "DMA Channels",
+            "instances": ch_names,
+            "color": "#4A148C", "padding": 1.0,
+            "description": "DMA channel logic and multiplexing",
+        })
+
+    # Core group (middle)
     core_names = [_shorten_dma_name(cn, data_width) for cn, _ in core_modules]
     core_names = [n for n in core_names if n in inst_names]
     if core_names:
         groups.append({
             "name": "Core Infrastructure",
             "instances": core_names,
-            "color": "#1B5E20",
+            "color": "#1B5E20", "padding": 1.5,
             "description": "Core modules: top, dual_core, registers",
         })
 
-    # AXI master sub-group
-    axim_names = [n for n in all_inst_names if "axim" in n]
-    if axim_names:
-        groups.append({
-            "name": "AXI Master Interface",
-            "instances": axim_names,
-            "color": "#0D47A1",
-            "description": "AXI master read/write data path",
-        })
-
-    # Channel sub-group
-    ch_names = [n for n in all_inst_names if n.startswith("ch") or "channel" in n]
-    if ch_names:
-        groups.append({
-            "name": "DMA Channels",
-            "instances": ch_names,
-            "color": "#4A148C",
-            "description": "DMA channel logic and multiplexing",
-        })
+    # Top-level (outermost)
+    groups.append({
+        "name": f"DMA AXI{data_width} Design",
+        "instances": all_inst_names,
+        "color": "#37474F", "padding": 3.0,
+        "description": f"DMA AXI {data_width}-bit top-level design",
+    })
 
     return {
         "design_name": design_name,
