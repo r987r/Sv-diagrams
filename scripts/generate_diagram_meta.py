@@ -457,8 +457,6 @@ def _classify_uvm_class(name, base, pkg_lower):
     """Classify a UVM class into a role category."""
     name_l = name.lower()
     base_l = base.lower()
-    if "test" in pkg_lower and "test" not in name_l.replace("test", "", 1):
-        pass
     if "test" in base_l or "test" in pkg_lower:
         return "test"
     if "virtual_seq" in pkg_lower or "virtual_sequence" in pkg_lower:
